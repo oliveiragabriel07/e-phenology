@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -69,20 +69,24 @@
 		<h1 class="logo-login">e-phenology</h1>
 		
 		<div class="login-panel">
-			<div class="control-group">
-				<label for="username">E-mail</label>
-				<div class="controls">
-					<input type="text" id="username" name="username" />
-				</div>
-			</div>
-			<div class="control-group">
-				<label for="password">Senha</label>
-				<div class="controls">
-					<input type="password" id="password" name="password" />
-				</div>
-			</div>
-			
-			<button id="signInBtn"class="btn btn-primary" style="float: right;">Entrar</button>
+			<form>
+				<fieldset>
+					<div class="control-group">
+						<label for="username">E-mail</label>
+						<div class="controls">
+							<input type="text" id="username" name="username" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label for="password">Senha</label>
+						<div class="controls">
+							<input type="password" id="password" name="password" />
+						</div>
+					</div>
+				</fieldset>
+				
+				<button type="submit" id="signInBtn"class="btn btn-primary" style="float: right;">Entrar</button>
+			</form>
 		</div>
 	</div>
 </body>

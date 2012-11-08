@@ -125,7 +125,7 @@ Class User_model extends Abstract_model {
 
 		if ($query->num_rows() == 1) {
 			$row = $query->first_row();
-			$this->startSession($row);
+			$this->id = $row->id;
 
 			return true;
 		}
@@ -141,8 +141,8 @@ Class User_model extends Abstract_model {
 		return false;
 	}
 
-	function startSession($row) {
-		$this->session->set_userdata('user_id', $row->ID);
+	function startSession() {
+		$this->session->set_userdata('user_id', $this->id);
 	}
 
 	function endSession() {
@@ -152,12 +152,10 @@ Class User_model extends Abstract_model {
 
 	function copyUserDetails($user) {
 		$userDTO = new UserDTO();
-		$userDTO->setId($user->ID);
-		$userDTO->setName($user->NAME);
-		$userDTO->setSurName($user->SURNAME);
-		$userDTO->setDisplayName($user->DISPLAYNAME);
-		$userDTO->setUserName($user->USERNAME);
-		$userDTO->setStatus($user->STATUS);
+		$userDTO->setId($user->id);
+		$userDTO->setName($user->name);
+		$userDTO->setUserName($user->username);
+		$userDTO->setStatus($user->status);
 		return $userDTO;
 	}
 }

@@ -17,10 +17,6 @@ class Login extends CI_Controller {
 		}
 	}
 	
-	function teste() {
-		echo "teste";
-	}
-
 	/**
 	 * Check credentials and start session
 	 */
@@ -29,6 +25,7 @@ class Login extends CI_Controller {
 		$password = $this->input->post('password');
 
 		if ($this->user->validate($username, $password)) {
+			$this->user->startSession();
 			$data = array(
 				'success' => true
 			);

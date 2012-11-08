@@ -1,6 +1,7 @@
 EP.view.LoginView = Backbone.View.extend({
     events : {
-        'click #signInBtn' : 'onSignInBtnClick'
+        'click #signInBtn' : 'onSignInBtnClick',
+        'submit form': 'onSignInBtnClick'
     },
     
     initialize: function() {
@@ -11,11 +12,15 @@ EP.view.LoginView = Backbone.View.extend({
     render : function() {
         Backbone.Validation.bind(this);
         this.$el = $('body');
+        this.$('input[name="username"]').focus();
+        
         return this;
     },
     
 // listeners
-    onSignInBtnClick: function() {
+    onSignInBtnClick: function(e) {
+        e.preventDefault();
+        
         var data = {
             username: this.$('input[name="username"]').val(),
             password: this.$('input[name="password"]').val()
