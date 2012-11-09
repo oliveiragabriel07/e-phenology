@@ -5,8 +5,9 @@
 	<title>e-phenology - Login</title>
 	
 	<!--  styles -->
+	<link rel="stylesheet" type="text/css" href="../web/lib/bootstrap/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="../web/css/login.css" />
 	<link rel="stylesheet" type="text/css" href="../web/css/style.css" />
-	<link rel="stylesheet" type="text/css" href="../web/lib/bootstrap/css/bootstrap.css" />	
 
 	<!-- lib -->
 	<script type="text/javascript" src="../web/lib/jquery/jquery.js"></script>
@@ -15,6 +16,7 @@
 	<script type="text/javascript" src="../web/lib/underscore/underscore.js"></script>
 	<script type="text/javascript" src="../web/lib/backbone/backbone.js"></script>
 	<script type="text/javascript" src="../web/lib/backbone/backbone-validation.js"></script>
+	<script type="text/javascript" src="../web/lib/backbone/backbone-validation-bootstrap.js"></script>
 	<script type="text/javascript" src="../web/lib/bootstrap/js/bootstrap.js"></script>
 	<script type="text/javascript" src="../web/js/app.js"></script>
 	<script type="text/javascript" src="../web/js/model/UserModel.js"></script>
@@ -26,41 +28,6 @@
 		});
 	</script>
 	
-	<style type="text/css">
-		body {
-			/* Firefox */
-			display:-moz-box;
-			-moz-box-orient:vertical;
-			-moz-box-pack:center;
-			-moz-box-align:center;
-			
-			/* Safari and Chrome */
-			display:-webkit-box;
-			-webkit-box-orient:vertical;
-			-webkit-box-pack:center;
-			-webkit-box-align:center;
-			
-			/* W3C */
-			display:box;
-			box-orient:vertical;
-			box-pack:center;
-			box-align:center;
-		}
-		
-		h1 {
-			margin-bottom: 20px;
-		}
-		
-		.login-panel {
-			display: inline-block;
-			background-color: white;
-			padding: 25px;
-			border: 1px solid #D2D2D2;
-			border-radius: 2px;
-			box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
-			
-		}
-	</style>
 </head>
 
 <body>
@@ -74,16 +41,21 @@
 					<div class="control-group">
 						<label for="username">E-mail</label>
 						<div class="controls">
-							<input type="text" id="username" name="username" />
+							<input class="input-block-level" type="text" id="username" name="username" />
 						</div>
 					</div>
 					<div class="control-group">
 						<label for="password">Senha</label>
 						<div class="controls">
-							<input type="password" id="password" name="password" />
+							<input class="input-block-level" type="password" id="password" name="password" />
 						</div>
 					</div>
 				</fieldset>
+				
+				<div id="error-box" class="alert alert-error" style="display: none">
+				  <button type="button" class="close" data-dismiss="alert">&times;</button>
+				  <span class="message">Usuario ou senha invalidos</span>
+				</div>
 				
 				<button type="submit" id="signInBtn"class="btn btn-primary" style="float: right;">Entrar</button>
 			</form>

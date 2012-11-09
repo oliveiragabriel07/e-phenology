@@ -1,0 +1,47 @@
+body {
+	/* Firefox */
+	display:-moz-box;
+	-moz-box-orient:vertical;
+	-moz-box-pack:center;
+	-moz-box-align:center;
+	
+	/* Safari and Chrome */
+	display:-webkit-box;
+	-webkit-box-orient:vertical;
+	-webkit-box-pack:center;
+	-webkit-box-align:center;
+	
+	/* W3C */
+	display:box;
+	box-orient:vertical;
+	box-pack:center;
+	box-align:center;
+}
+
+h1 {
+	margin-bottom: 20px;
+}
+
+/**
+ * Bootstrap overrides
+ */		
+.control-group.error > label { 
+	color: #444;
+}
+
+.control-group.error input,
+.control-group.error select,
+.control-group.error textarea {
+	background-color: #FFEAEA;
+}
+
+.login-panel {
+	display: inline-block;
+	background-color: white;
+	padding: 25px;
+	border: 1px solid #D2D2D2;
+	border-radius: 2px;
+	width: 250px;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+	
+}

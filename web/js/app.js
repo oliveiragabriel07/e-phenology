@@ -12,7 +12,9 @@ EP.emptyFn = function() {};
 
 EP.AppRouter = Backbone.Router.extend({
     routes:{
-        '': 'home'
+        '': 'home',
+        'user' : 'userList',
+        'user/:userId': 'userDetails'
     },
 
     initialize:function () {

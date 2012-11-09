@@ -9,10 +9,13 @@ EP.model.User = Backbone.Model.extend({
     },
 
     validation : {
-        username : {
+        username : [{
             required : true,
             msg : 'Digite seu email'
-        },
+        },{
+            pattern: 'email',
+            msg : 'Digite um email válido'
+        }],
 
         password : {
             required : true,
@@ -21,6 +24,8 @@ EP.model.User = Backbone.Model.extend({
     },
 
     doLogin : function() {
+        var self = this;
+        
         $.ajax({
             type : 'POST',
             data : {
@@ -29,9 +34,14 @@ EP.model.User = Backbone.Model.extend({
             },
             url : '../login/doLogin',
             dataType : 'json',
+            error: function() {
+                // TODO show connection error
+            },
             success : function(data) {
                 if (data.success) {
                     window.location = '/';
+                } else {
+                    self.trigger('failure', data.message);
                 }
             }
         });

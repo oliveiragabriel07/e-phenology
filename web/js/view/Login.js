@@ -1,11 +1,14 @@
 EP.view.LoginView = Backbone.View.extend({
     events : {
         'click #signInBtn' : 'onSignInBtnClick',
+        'blur input': 'preValidate',
         'submit form': 'onSignInBtnClick'
     },
     
     initialize: function() {
         this.model = new EP.model.User();
+        this.model.on('failure', this.onLoginFailure, this);
+        
         this.render();
     },
     
@@ -18,6 +21,21 @@ EP.view.LoginView = Backbone.View.extend({
     },
     
 // listeners
+    preValidate: function(e) {
+        var target = $(e.target),
+            opt = Backbone.Validation.callbacks,
+            name = target.attr('name'),
+            error;
+            
+            error = this.model.preValidate(name, target.val(), true);
+            
+            if (error) {
+                opt.invalid(this, name, error, 'name');
+            } else {
+                opt.valid(this, name, 'name');   
+            }
+    },
+    
     onSignInBtnClick: function(e) {
         e.preventDefault();
         
@@ -31,5 +49,12 @@ EP.view.LoginView = Backbone.View.extend({
         }
         
         this.model.doLogin();
+    },
+    
+    onLoginFailure: function(msg) {
+        this.$('#error-box')
+            .slideDown()
+            .find('.message')
+            .html(msg);
     }
 }); 
