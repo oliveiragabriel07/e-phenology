@@ -20,6 +20,13 @@
 	<script type="text/javascript" src="../web/js/app.js"></script>
 	<script type="text/javascript" src="../web/js/model/UserModel.js"></script>
 	<script type="text/javascript" src="../web/js/view/Login.js"></script>
+	<script type="text/javascript" src="../web/js/view/NavigationMenu.js"></script>
+	<script type="text/javascript">
+		jQuery(function($) {
+			EP.app = new EP.AppRouter();
+			Backbone.history.start();
+		});
+	</script>
 	
 	<style type="text/css">
 		/**
@@ -76,14 +83,6 @@
 			<div class="row-fluid">
 				<!--Sidebar -->
 				<div class="span3 side-menu">
-					<ul class="nav nav-list">
-					  <li class="active"><a href="#"><i class="icon-home icon-white"></i> Inicio</a></li>
-					  <li><a href="#"><i class="icon-list-alt"></i> Dados de coletas</a></li>
-					  <li><a href="#"><i class="icon-leaf"></i> Individuos </a></li>
-					  <li><a href="#"><i class="icon-align-right"></i> Graficos</a></li>
-					  <li><a href="#"><i class="icon-user icon-green"></i> Usuarios</a></li>
-					  <li><a href="#"><i class="icon-calendar"></i> Agenda</a></li>
-					</ul>
 				</div>
 			
 				<!--Body -->
