@@ -18,6 +18,10 @@ class User extends CI_Controller {
 		
 		$this->load->view('main_view', $data);
 	}
+	
+	function getName() {
+		echo $this->user->getName();
+	}
 }
 
 ?>
