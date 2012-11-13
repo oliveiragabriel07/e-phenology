@@ -24,6 +24,7 @@ html, body {
 
 body {
 	background-color: #F2F2F2;
+	min-width: 650px;
 }
 
 h2 {

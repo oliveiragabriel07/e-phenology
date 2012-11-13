@@ -20,6 +20,10 @@
 	<script type="text/javascript" src="../web/lib/bootstrap/js/bootstrap.js"></script>
 	<script type="text/javascript" src="../web/lib/dataTables/js/jquery.dataTables.js"></script>
 	<script type="text/javascript" src="../web/lib/dataTables/js/dt.bootstrap.js"></script>
+	<script type="text/javascript" src="../web/lib/Array.js"></script>
+	<script type="text/javascript" src="../web/lib/date.js"></script>
+	
+	<!--  application  -->
 	<script type="text/javascript" src="../web/js/app.js"></script>
 	<script type="text/javascript" src="../web/js/model/UserModel.js"></script>
 	<script type="text/javascript" src="../web/js/view/Login.js"></script>

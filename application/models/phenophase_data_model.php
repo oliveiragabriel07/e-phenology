@@ -123,20 +123,52 @@ Class Phenophase_data_model extends Abstract_model {
 		return $phenDTO;
 	}
 	
-	public function getList($limit, $start, $sort, $dir) {
-		$this->db->from($this->getTableName());
+// 	public function getList($limit, $start, $sort, $dir) {
+// 		$this->db->from($this->getTableName());
+// 		$this->db->order_by($sort, $dir);
+// 		$this->db->limit($limit, $start);
+		
+// 		$phenophaseDataList = array();
+// 		$query = $this->db->get();
+		
+// 		foreach ($query->result() as $row) {
+// 			$phenophaseData = $this->copyPhenophaseData($row);
+// 			$phenophaseDataList[] = $phenophaseData;
+// 		}
+		
+// 		return $phenophaseDataList;		
+// 	}
+	
+	public function getListWithIndividual($limit, $start, $sort, $dir) {
+		$table = $this->getTableName();
+	
+		$this->db->select("
+				data.id,
+				data.date,
+				data.value,
+				data.image,
+				i.id as id_individual,
+				p.name as phenophase,
+				s.scientific_name as species,
+				g.name as genus,
+				f.name as family");
+		$this->db->from("$table as data");
+		$this->db->join('t_phenophase as p', 'data.id_phenophase = p.id');
+		$this->db->join('t_individual as i', 'data.id_individual = i.id');
+		$this->db->join('t_species as s', 'i.id_species = s.id');
+		$this->db->join('t_genus as g', 's.id_genus = g.id');
+		$this->db->join('t_family as f', 'g.id_family = f.id');
 		$this->db->order_by($sort, $dir);
 		$this->db->limit($limit, $start);
-		
+	
 		$phenophaseDataList = array();
 		$query = $this->db->get();
-		
+	
 		foreach ($query->result() as $row) {
-			$phenophaseData = $this->copyPhenophaseData($row);
-			$phenophaseDataList[] = $phenophaseData;
+			$phenophaseDataList[] = PhenophaseDataDTO::copy($row);
 		}
-		
-		return $phenophaseDataList;		
+	
+		return $phenophaseDataList;
 	}
 }
 

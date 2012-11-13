@@ -22,24 +22,79 @@ EP.view.PhenophaseData.Table = Backbone.View.extend({
         this.collection = new EP.collection.PhenophaseData();
     },
     
+    buildSearchParams: function(dataArray) {
+        var params = {},
+            columns = [],
+            colsReg = /mDataProp/,
+            startReg = /iDisplayStart/,
+            lengthReg = /iDisplayLength/,
+            sortFieldReg = /iSortCol/,
+            sortDirReg = /sSortDir/;
+
+        _.each(dataArray, function(data) {
+            if (colsReg.test(data.name)) {
+                columns.push(data.value);
+            }
+            
+            else if (startReg.test(data.name)) {
+                params.start = data.value;
+            }
+            
+            else if(lengthReg.test(data.name)) {
+                params.length = data.value;
+            }
+            
+            else if(sortFieldReg.test(data.name)) {
+                params.sortField = data.value;
+            }
+            
+            else if (sortDirReg.test(data.name)) {
+                params.sortDir = data.value;
+            }
+        });
+        
+        params.sortField = columns[params.sortField];
+        
+        return params;
+    },
+    
     enhanceElements: function() {
         var self = this;
         
         this.$el.dataTable({
-            sDom: "<'row'l>t<'row'<'span4'i><'span8'p>>",
+            sDom: "<'row'il>t<'row'p'>>",
             sWrapper: 'dataTables_wrapper form-inline',
             sPaginationType: "bootstrap",
             bServerSide: true,
+            bAutoWidth: false,
             fnServerData: function(sSource, aoData, fnCallback, oSettings) {
-                self.collection.getPaginated(aoData, fnCallback);
+                // set params
+                var metaData = self.buildSearchParams(aoData),
+                    collection = self.collection,
+                    meta = collection.meta;
+                
+                if (!meta.changedAttributes(metaData)) {
+                    return;
+                }
+                
+                meta.set(metaData);                
+                collection.getPaginated({
+                    success: function(collection) {
+                        fnCallback({
+                            iTotalDisplayRecords: collection.total,
+                            aaData: collection.toJSON()
+                        });
+                    }
+                });
             },
             aoColumns: [
-                { "mData": "id", 'sTitle': 'Id' },
-                { "mData": "date", 'sTitle': 'Data' },
-                { "mData": "individualId", 'sTitle': 'Individuo' },
-                { "mData": "phenophaseId", 'sTitle': 'Phenophase' },
-                { "mData": "value", 'sTitle': 'Valor' }
+                { mData: "individual", sTitle: 'Individuo', sWidth: '40%' },
+                { mData: "date", mRender: self.dateRenderer, sTitle: 'Data', sWidth: '20%' },
+                { mData: "phenophase", sTitle: 'Phenophase', sWidth: '20%' },
+                { mData: "value", sTitle: 'Valor', sWidth: '20%' },
+                { mData: "id", bVisible: false }
             ],
+            aaSorting: [[1,'desc']],
             oLanguage: {
                 sLengthMenu: '_MENU_ Resultados por pagina',
                 sInfo: '_START_ - _END_ de _TOTAL_',
@@ -51,11 +106,29 @@ EP.view.PhenophaseData.Table = Backbone.View.extend({
                 }
             }
         });
+    },
+    
+    dateRenderer: function(value) {
+        return value.toString('dd/MM/yyyy');
+    }
+});
+
+EP.model.MetaData = Backbone.Model.extend({
+    defaults: {
+        start: '',
+        length: '',
+        sortField: '',
+        sortDir: ''
     }
 });
 
 EP.model.PhenophaseData = Backbone.Model.extend({
     
+    parse: function(response) {
+        response.individual = response.individualId + ' - ' + response.species;
+        response.date = Date.parse(response.date);
+        return response;
+    }
 });
 
 EP.collection.PhenophaseData = Backbone.Collection.extend({
@@ -64,20 +137,39 @@ EP.collection.PhenophaseData = Backbone.Collection.extend({
     model: EP.model.PhenophaseData,
     
     parse: function(response) {
+        this.total = response.total;
         return response;
     },
     
-    getPaginated: function(params, callback) {
-        $.ajax({
-            url: this.url,
-            method: 'GET',
-            dataType: 'json',
-            success: function(result) {
-                callback({
-                    iTotalDisplayRecords: 2,
-                    aaData: result
-                 });
+    total: '',
+    
+    initialize: function() {
+        this.meta = new EP.model.MetaData();
+    },
+    
+    getPaginated: function(options) {
+        options = options ? _.clone(options) : {};
+        options.parse = true;
+
+        var collection = this;
+        var success = options.success;
+        options.success = function(resp, status, xhr) {
+            collection.reset(collection.parse(resp, xhr), options);
+            collection.total = collection.size();
+            if (success) {
+                success(collection, resp);                
             }
-        });
+        };
+        options.error = Backbone.wrapError(options.error, collection, options);
+        
+        // Default JSON-request options.
+        var params = {
+            url: this.url,
+            type: 'GET',
+            dataType: 'json',
+            data: this.meta.toJSON()
+        };
+        
+        return $.ajax(_.extend(params, options));
     }
 });

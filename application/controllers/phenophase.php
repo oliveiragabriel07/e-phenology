@@ -18,9 +18,13 @@ class Phenophase extends CI_Controller {
 	}
 	
 	function search() {
-		// validate input
+		// TODO validate input params
+		$limit = $this->input->get('length');
+		$start = $this->input->get('start');
+		$sort = $this->input->get('sortField');
+		$dir = $this->input->get('sortDir');
 		
-		$phenophaseData = $this->phenophase->getList(10, 0, "date", "desc");
+		$phenophaseData = $this->phenophase->getListWithIndividual($limit, $start, $sort, $dir);
 		echo json_encode($phenophaseData);
 	}
 }
