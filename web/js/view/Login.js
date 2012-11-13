@@ -6,7 +6,7 @@ EP.view.LoginView = Backbone.View.extend({
     },
     
     initialize: function() {
-        this.model = new EP.model.User();
+        this.model = new EP.model.UserLogin();
         this.model.on('failure', this.onLoginFailure, this);
         
         this.render();

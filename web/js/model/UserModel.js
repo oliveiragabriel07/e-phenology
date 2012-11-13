@@ -4,8 +4,14 @@ EP.model.User = Backbone.Model.extend({
         id : '',
         name : '',
         username : '',
-        password : '',
         status : ''
+    }
+}); 
+
+EP.model.UserLogin = Backbone.Model.extend({
+    defaults : {
+        username : '',
+        password : ''
     },
 
     validation : {

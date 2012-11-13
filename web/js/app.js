@@ -23,12 +23,21 @@ EP.AppRouter = Backbone.Router.extend({
     },
 
     initialize:function () {
-        // initialize side menu
+        this.userModel = new EP.model.User(EP.BootstrapData);
+        
+        
+        // get elements
         this.navEl = $('.side-menu');
+        this.mainEl = $('.main-content');
+        this.headerEl = $('.header');
+        
+        // setup app header
+        this.header = new EP.view.Header({model: this.userModel});
+        this.headerEl.html(this.header.render().$el);
+        
+        // setup navigation menu
         this.navMenu = new EP.view.NavigationMenu();
         this.navEl.html(this.navMenu.render().$el);
-        
-        this.mainEl = $('.main-content');
     },
     
     home: function() {

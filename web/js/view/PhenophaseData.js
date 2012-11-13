@@ -81,7 +81,7 @@ EP.view.PhenophaseData.Table = Backbone.View.extend({
                 collection.getPaginated({
                     success: function(collection) {
                         fnCallback({
-                            iTotalDisplayRecords: collection.total,
+                            iTotalDisplayRecords: collection.totalRows,
                             aaData: collection.toJSON()
                         });
                     }
@@ -137,11 +137,11 @@ EP.collection.PhenophaseData = Backbone.Collection.extend({
     model: EP.model.PhenophaseData,
     
     parse: function(response) {
-        this.total = response.total;
-        return response;
+        this.totalRows = response.totalRows;
+        return response.data;
     },
     
-    total: '',
+    totalRows: '',
     
     initialize: function() {
         this.meta = new EP.model.MetaData();

@@ -93,7 +93,7 @@ Class PhenophaseDataDTO {
 	
 	public function setIndividualId($individualId) {
 		$this->individualId = $individualId;
-	}	
+	}
 }
 
 ?>

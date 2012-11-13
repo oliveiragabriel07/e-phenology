@@ -142,6 +142,7 @@ Class Phenophase_data_model extends Abstract_model {
 	public function getListWithIndividual($limit, $start, $sort, $dir) {
 		$table = $this->getTableName();
 	
+		$this->db->start_cache();
 		$this->db->select("
 				data.id,
 				data.date,
@@ -151,7 +152,7 @@ Class Phenophase_data_model extends Abstract_model {
 				p.name as phenophase,
 				s.scientific_name as species,
 				g.name as genus,
-				f.name as family");
+				f.name as family");		
 		$this->db->from("$table as data");
 		$this->db->join('t_phenophase as p', 'data.id_phenophase = p.id');
 		$this->db->join('t_individual as i', 'data.id_individual = i.id');
@@ -160,15 +161,23 @@ Class Phenophase_data_model extends Abstract_model {
 		$this->db->join('t_family as f', 'g.id_family = f.id');
 		$this->db->order_by($sort, $dir);
 		$this->db->limit($limit, $start);
-	
+		$this->db->stop_cache();
+		
 		$phenophaseDataList = array();
 		$query = $this->db->get();
 	
 		foreach ($query->result() as $row) {
 			$phenophaseDataList[] = PhenophaseDataDTO::copy($row);
 		}
+		
+		$this->db->select("COUNT(*) as total_rows");
+		$query = $this->db->get();
+		$total = $query->row()->total_rows;
 	
-		return $phenophaseDataList;
+		return array(
+			'data' => $phenophaseDataList,
+			'totalRows' => $total
+		);
 	}
 }
 

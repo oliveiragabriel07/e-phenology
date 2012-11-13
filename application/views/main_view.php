@@ -27,6 +27,7 @@
 	<script type="text/javascript" src="../web/js/app.js"></script>
 	<script type="text/javascript" src="../web/js/model/UserModel.js"></script>
 	<script type="text/javascript" src="../web/js/view/Login.js"></script>
+	<script type="text/javascript" src="../web/js/view/Header.js"></script>
 	<script type="text/javascript" src="../web/js/view/NavigationMenu.js"></script>
 	<script type="text/javascript" src="../web/js/view/AbstractPage.js"></script>
 	<script type="text/javascript" src="../web/js/view/Home.js"></script>
@@ -36,6 +37,11 @@
 	<script type="text/javascript" src="../web/js/view/User.js"></script>
 	<script type="text/javascript" src="../web/js/view/Agenda.js"></script>
 	<script type="text/javascript" src="../web/js/main.js"></script>
+	<script type="text/javascript">
+		(function($) {
+			EP.BootstrapData = <?php echo json_encode($user) ?>
+		}(jQuery));
+	</script>
 	
 	<style type="text/css">
 		/**
@@ -76,17 +82,48 @@
 			min-height: 200px !important;
 		}
 		
+		h1 {
+			line-height: 50px;
+		}
+		
 		h3 {
 			color: #51B11D;
 			border-bottom: 1px solid #ebebeb;
 			margin: 0 0 30px;
 		}
 		
+		.header {
+			margin-bottom: 30px;
+		}
+		
+		.header .logo,
+		.header .logo a {
+			display: block;
+		}
+		
+		.header .logo {
+			margin: 10px 0;
+			float: left;
+		}
+		
+		.header .logo a {
+			/*text-indent: -9999px;*/
+			overflow: hidden;	
+		}
+		
+		.header .action-bar {
+			margin-top: 20px;
+		}
+		
+		.header .action-bar-right {
+			float: right;
+		}
+		
 	</style>
 	
 	</head>
 	<body>
-		<div class="header"></div>
+		<div class="header container-fluid"></div>
 		<div class="container-fluid">
 			<div class="row-fluid">
 				<!--Sidebar -->
