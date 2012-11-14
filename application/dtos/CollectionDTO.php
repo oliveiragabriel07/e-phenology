@@ -1,22 +1,32 @@
 <?php 
-Class PhenophaseDataDTO {
+Class CollectionDTO {
 	public $id;
-	public $value;
 	public $date;
 	public $image;
-	public $phenophase;	
+	public $remark;
+	public $flowerBud;
+	public $anthesis;
+	public $ripe;
+	public $unripe;
+	public $budding;
+	public $fall;	
 	public $species;
 	public $genus;
 	public $family;
 	public $individualId;
 	
 	public static function copy($result) {
-		$dto = new PhenophaseDataDTO();
+		$dto = new CollectionDTO();
 		$dto->setId($result->id);
-		$dto->setValue($result->value);
 		$dto->setDate($result->date);
 		$dto->setImage($result->image);
-		$dto->setPhenophase($result->phenophase);
+		$dto->setRemark($result->remark);
+		$dto->setFlowerBud($result->flower_bud);
+		$dto->setAnthesis($result->anthesis);
+		$dto->setRipe($result->ripe);
+		$dto->setUnripe($result->unripe);
+		$dto->setBudding($result->budding);
+		$dto->setFall($result->fall);		
 		$dto->setSpecies($result->species);
 		$dto->setGenus($result->genus);
 		$dto->setFamily($result->family);
@@ -30,14 +40,6 @@ Class PhenophaseDataDTO {
 	
 	public function setId($id) {
 		$this->id = $id;
-	}
-
-	public function getValue() {
-		return $this->value;
-	}
-
-	public function setValue($value) {
-		$this->value= $value;
 	}
 
 	public function getDate() {
@@ -56,11 +58,60 @@ Class PhenophaseDataDTO {
 		$this->image = $image;
 	}
 	
-	public function getPhenophase() {
-		return $this->phenophase;
+	public function getRemark() {
+		return $this->remark;
 	}
-	public function setPhenophase($phenophase) {
-		$this->phenophase = $phenophase;
+	
+	public function setRemark($remark) {
+		$this->remark = $remark;
+	}
+	
+	public function getFlowerBud() {
+		return $this->flowerBud;
+	}
+	
+	public function setFlowerBud($flowerBud) {
+		$this->flowerBud = $flowerBud;
+	}
+	
+	public function getAnthesis() {
+		return $this->anthesis;
+	}
+	
+	public function setAnthesis($anthesis) {
+		$this->anthesis = $anthesis;
+	}
+	
+	public function getRipe() {
+		return $this->ripe;
+	}
+	
+	public function setRipe($ripe) {
+		$this->ripe= $ripe;
+	}
+	
+	public function getUnripe() {
+		return $this->unripe;
+	}
+	
+	public function setUnripe($unripe) {
+		$this->unripe= $unripe;
+	}
+
+	public function getBudding() {
+		return $this->budding;
+	}
+	
+	public function setBudding($budding) {
+		$this->budding = $budding;
+	}
+	
+	public function getFall() {
+		return $this->fall;
+	}
+	
+	public function setFall($fall) {
+		$this->fall = $fall;
 	}
 	
 	public function getSpecies() {

@@ -115,10 +115,6 @@
 			margin-top: 20px;
 		}
 		
-		.header .action-bar-right {
-			float: right;
-		}
-		
 	</style>
 	
 	</head>

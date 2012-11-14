@@ -7,7 +7,7 @@ class Phenophase extends CI_Controller {
 		parent::__construct();
 
 		$this->load->model('User_model', 'user');
-		$this->load->model('Phenophase_data_model', 'phenophase');
+		$this->load->model('Collection_model', 'collection');
 		if(!$this->user->isLogged()) {
 			redirect('login');
 		}
@@ -24,7 +24,7 @@ class Phenophase extends CI_Controller {
 		$sort = $this->input->get('sortField');
 		$dir = $this->input->get('sortDir');
 		
-		$phenophaseData = $this->phenophase->getListWithIndividual($limit, $start, $sort, $dir);
+		$phenophaseData = $this->collection->getListWithIndividual($limit, $start, $sort, $dir);
 		echo json_encode($phenophaseData);
 	}
 }
