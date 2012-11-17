@@ -45,11 +45,12 @@ EP.view.Collection.Table = GridView.extend({
     
     onItemClick: function(view, model) {
 		var self = this,
-			itemEl;
+			actual, itemEl;
 		
 		if (this.editing) {
+			actual = this.editing.$el;
 			this.editing.$el.slideUp('slow', function() {
-				$('tr.details', self.$tBody).remove();
+				actual.closest('tr').remove();
 			});
 		}
 		
