@@ -20,7 +20,7 @@ EP.view.NavigationMenu = Backbone.View.extend({
     initialize: function() {
         this.collection = new EP.collection.NavigationMenu([
             {icon: 'icon-home', href:'#', text: 'Inicio', tag: 'home', active: false},
-            {icon: 'icon-list-alt', href:'#data', text: 'Dados de coletas', tag: 'data', active: false},
+            {icon: 'icon-list-alt', href:'#collection', text: 'Dados de coletas', tag: 'data', active: false},
             {icon: 'icon-leaf', href:'#individual', text: 'Individuos', tag: 'individual', active: false},
             {icon: 'icon-align-right', href:'#chart', text: 'Graficos', tag: 'chart', active: false},
             {icon: 'icon-user', href:'#user', text: 'Usuarios', tag: 'user', active: false},

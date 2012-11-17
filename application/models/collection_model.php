@@ -5,8 +5,22 @@ require_once 'application/dtos/CollectionDTO.php';
 Class Collection_model extends Abstract_model {
 
 	const TABLE_NAME = 't_collection';
-
-	private $individualId;
+	
+	public static $MAPPING = array(
+		"id" => "id_collection",
+		"individual" => "id_individual",
+		"date" => "date",			
+		"image" => "image",
+		"remark" => "remark",
+		"flowerBud" => "flower_bud",
+		"anthesis" => "anthesis",
+		"ripe" => "ripe",
+		"unripe" => "unripe",
+		"budding" => "budding",
+		"fall" => "fall"
+	);
+	
+	private $individual;
 	private $date;
 	private $image;
 	private $remark;
@@ -18,17 +32,17 @@ Class Collection_model extends Abstract_model {
 	private $fall;
 
 	/**
-	 * @return the $individualId
+	 * @return the $individual
 	 */
-	public function getIndividualId() {
-		return $this->individualId;
+	public function getIndividual() {
+		return $this->individual;
 	}
 
 	/**
-	 * @param field_type $individualId
+	 * @param field_type $individual
 	 */
-	public function setIndividualId($individualId) {
-		$this->individualId = $individualId;
+	public function setIndividual($individual) {
+		$this->individual = $individual;
 	}
 
 	/**
@@ -177,7 +191,7 @@ Class Collection_model extends Abstract_model {
 	 */
 	protected function parseQueryResult($result) {
 		$this->setId($result->id);
-		$this->setIndividualId($result->id_individual);
+		$this->setIndividual($result->id_individual);
 		$this->setDate($result->date);
 		$this->setImage($result->image);
 		$this->setRemark($result->remark);
@@ -208,16 +222,17 @@ Class Collection_model extends Abstract_model {
 
 	private function copyCollection($result) {
 		$dto = new CollectionDTO();
-		$dto->setId($result->id);
-		$dto->setIndividualId($result->id_individual);
-		$dto->setImage($result->image);
-		$dto->setDate($result->date);
-		$dto->setFlowerBud($result->flower_bud);
-		$dto->setAnthesis($result->anthesis);
-		$dto->setRipe($result->ripe);
-		$dto->setUnripe($result->unripe);
-		$dto->setBudding($result->budding);
-		$dto->setFall($result->fall);		
+		$dto->setId($result->{self::$MAPPING["id"]});
+		$dto->setIndividual($result->{self::$MAPPING["individual"]});
+		$dto->setImage($result->{self::$MAPPING["image"]});
+		$dto->setDate($result->{self::$MAPPING["date"]});
+		$dto->setRemark($result->{self::$MAPPING["remark"]});
+		$dto->setFlowerBud($result->{self::$MAPPING["flowerBud"]});
+		$dto->setAnthesis($result->{self::$MAPPING["anthesis"]});
+		$dto->setRipe($result->{self::$MAPPING["ripe"]});
+		$dto->setUnripe($result->{self::$MAPPING["unripe"]});
+		$dto->setBudding($result->{self::$MAPPING["budding"]});
+		$dto->setFall($result->{self::$MAPPING["fall"]});		
 		return $dto;
 	}
 	
@@ -240,27 +255,26 @@ Class Collection_model extends Abstract_model {
 		$table = $this->getTableName();
 	
 		$this->db->start_cache();
-		$this->db->select("
-				d.id,
-				d.date,
-				d.image,
-				d.remark,
-				d.flower_bud,
-				d.anthesis,
-				d.ripe,
-				d.unripe,
-				d.budding,
-				d.fall,
-				i.id as id_individual,
-				s.scientific_name as species,
-				g.name as genus,
-				f.name as family");		
+		$this->db->select("d." . self::$MAPPING["id"]);
+		$this->db->select("d." . self::$MAPPING["date"]);
+		$this->db->select("d." . self::$MAPPING["image"]);
+		$this->db->select("d." . self::$MAPPING["remark"]);
+		$this->db->select("d." . self::$MAPPING["flowerBud"]);
+		$this->db->select("d." . self::$MAPPING["anthesis"]);
+		$this->db->select("d." . self::$MAPPING["ripe"]);
+		$this->db->select("d." . self::$MAPPING["unripe"]);
+		$this->db->select("d." . self::$MAPPING["budding"]);
+		$this->db->select("d." . self::$MAPPING["fall"]);
+		$this->db->select("d." . self::$MAPPING["individual"]);
+		$this->db->select("s.scientific_name as species");
+		$this->db->select("g.name as genus");
+		$this->db->select("f.name as family");
 		$this->db->from("$table as d");
 		$this->db->join('t_individual as i', 'd.id_individual = i.id');
 		$this->db->join('t_species as s', 'i.id_species = s.id');
 		$this->db->join('t_genus as g', 's.id_genus = g.id');
 		$this->db->join('t_family as f', 'g.id_family = f.id');
-		$this->db->order_by($sort, $dir);
+		$this->db->order_by(self::$MAPPING[$sort], $dir);
 		$this->db->limit($limit, $start);
 		$this->db->stop_cache();
 		

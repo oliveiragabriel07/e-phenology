@@ -17,20 +17,20 @@ Class CollectionDTO {
 	
 	public static function copy($result) {
 		$dto = new CollectionDTO();
-		$dto->setId($result->id);
-		$dto->setDate($result->date);
-		$dto->setImage($result->image);
-		$dto->setRemark($result->remark);
-		$dto->setFlowerBud($result->flower_bud);
-		$dto->setAnthesis($result->anthesis);
-		$dto->setRipe($result->ripe);
-		$dto->setUnripe($result->unripe);
-		$dto->setBudding($result->budding);
-		$dto->setFall($result->fall);		
+		$dto->setId($result->{Collection_model::$MAPPING["id"]});
+		$dto->setIndividualId($result->{Collection_model::$MAPPING["individual"]});
+		$dto->setImage($result->{Collection_model::$MAPPING["image"]});
+		$dto->setDate($result->{Collection_model::$MAPPING["date"]});
+		$dto->setRemark($result->{Collection_model::$MAPPING["remark"]});
+		$dto->setFlowerBud($result->{Collection_model::$MAPPING["flowerBud"]});
+		$dto->setAnthesis($result->{Collection_model::$MAPPING["anthesis"]});
+		$dto->setRipe($result->{Collection_model::$MAPPING["ripe"]});
+		$dto->setUnripe($result->{Collection_model::$MAPPING["unripe"]});
+		$dto->setBudding($result->{Collection_model::$MAPPING["budding"]});
+		$dto->setFall($result->{Collection_model::$MAPPING["fall"]});
 		$dto->setSpecies($result->species);
 		$dto->setGenus($result->genus);
 		$dto->setFamily($result->family);
-		$dto->setIndividualId($result->id_individual);
 		return $dto;
 	}
 	

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>e-phenology - Login</title>
+	<title>e-phenology</title> 
 	
 	<!--  styles -->
 	<link rel="stylesheet" type="text/css" href="../web/lib/bootstrap/css/bootstrap.css" />	
@@ -18,20 +18,19 @@
 	<script type="text/javascript" src="../web/lib/backbone/backbone-validation.js"></script>
 	<script type="text/javascript" src="../web/lib/backbone/backbone-validation-bootstrap.js"></script>
 	<script type="text/javascript" src="../web/lib/bootstrap/js/bootstrap.js"></script>
-	<script type="text/javascript" src="../web/lib/dataTables/js/jquery.dataTables.js"></script>
-	<script type="text/javascript" src="../web/lib/dataTables/js/dt.bootstrap.js"></script>
 	<script type="text/javascript" src="../web/lib/Array.js"></script>
 	<script type="text/javascript" src="../web/lib/date.js"></script>
 	
 	<!--  application  -->
 	<script type="text/javascript" src="../web/js/app.js"></script>
 	<script type="text/javascript" src="../web/js/model/UserModel.js"></script>
+	<script type="text/javascript" src="../web/js/view/Grid.js"></script>
 	<script type="text/javascript" src="../web/js/view/Login.js"></script>
 	<script type="text/javascript" src="../web/js/view/Header.js"></script>
 	<script type="text/javascript" src="../web/js/view/NavigationMenu.js"></script>
 	<script type="text/javascript" src="../web/js/view/AbstractPage.js"></script>
 	<script type="text/javascript" src="../web/js/view/Home.js"></script>
-	<script type="text/javascript" src="../web/js/view/PhenophaseData.js"></script>
+	<script type="text/javascript" src="../web/js/view/Collection.js"></script>
 	<script type="text/javascript" src="../web/js/view/Individual.js"></script>
 	<script type="text/javascript" src="../web/js/view/Chart.js"></script>
 	<script type="text/javascript" src="../web/js/view/User.js"></script>
@@ -48,8 +47,7 @@
 		 * Override Bootstrap styles
 		 */
 		.nav-list > li > a {
-			padding: 5px 15px;
-			border-radius: 3px 0 0 3px;
+			padding: 6px 15px;
 		}
 		
 		[class^="icon-"], [class*=" icon-"] {
@@ -69,14 +67,13 @@
 		}
 		
 		.side-menu {
-			padding-top: 10px;
+			padding-top: 2px;
 		}
 		
 		.main-content {
 			background-color: #ffffff;
 			margin: 0;
 			padding: 10px;
-			border-radius: 5px;
 			border: 1px solid #d7d7d7;
 			box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.1);
 			min-height: 200px !important;
@@ -93,7 +90,7 @@
 		}
 		
 		.header {
-			margin-bottom: 30px;
+			margin-bottom: 20px;
 		}
 		
 		.header .logo,
@@ -115,6 +112,11 @@
 			margin-top: 20px;
 		}
 		
+		.footer {
+			margin-top: 20px;
+			min-height: 20px;
+		}		
+		
 	</style>
 	
 	</head>
@@ -132,5 +134,6 @@
 			
 			</div>
 		</div>	
+		<div class="footer container-fluid"></div>
 	</body>
 </html>

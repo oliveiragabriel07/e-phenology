@@ -1,23 +1,19 @@
-div.dataTables_length label {
-	line-height: 28px;
-	float: right;
-	text-align: left;
+.table-wrapper .row {
+	margin-bottom: 15px;
 }
 
-div.dataTables_length select {
-	float: right;
-	margin-bottom: 0;
-	margin-left: 10px;
-	width: 75px;
-}
-
-div.dataTables_filter label {
+.table-wrapper div.page-size {
 	float: right;
 }
 
-div.dataTables_info {
+.table-wrapper div.page-size label{
+	margin: 0 5px 0 0;
+	line-height: 30px;
+}
+
+.table-wrapper div.info {
 	float: left;
-	padding-top: 8px;
+	line-height: 30px;
 }
 
 div.dataTables_paginate {
@@ -27,6 +23,7 @@ div.dataTables_paginate {
 table {
 	margin-bottom: 6px !important;
 	clear: both;
+	font-size: 12px;
 }
 
 table.dataTable th:active {
