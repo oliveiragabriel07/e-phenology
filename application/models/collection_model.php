@@ -1,12 +1,16 @@
 <?php
 require_once 'application/models/abstract_model.php';
+require_once 'application/models/family_model.php';
+require_once 'application/models/genus_model.php';
+require_once 'application/models/species_model.php';
+require_once 'application/models/individual_model.php';
 require_once 'application/dtos/CollectionDTO.php';
 
 Class Collection_model extends Abstract_model {
 
-	const TABLE_NAME = 't_collection';
+	public static $tableName = "t_collection";
 	
-	public static $MAPPING = array(
+	public static $map = array(
 		"id" => "id_collection",
 		"individual" => "id_individual",
 		"date" => "date",			
@@ -20,6 +24,14 @@ Class Collection_model extends Abstract_model {
 		"fall" => "fall"
 	);
 	
+	public static function getColumn($field) {
+		return Collection_model::$map[$field];
+	}
+	
+	public static function getMap($field) {
+		return Collection_model::$tableName . "." . Collection_model::$map[$field];
+	}
+	
 	private $individual;
 	private $date;
 	private $image;
@@ -30,7 +42,7 @@ Class Collection_model extends Abstract_model {
 	private $unripe;
 	private $budding;
 	private $fall;
-
+	
 	/**
 	 * @return the $individual
 	 */
@@ -190,17 +202,16 @@ Class Collection_model extends Abstract_model {
 	 * @see Abstract_model::parseQueryResult()
 	 */
 	protected function parseQueryResult($result) {
-		$this->setId($result->id);
-		$this->setIndividual($result->id_individual);
-		$this->setDate($result->date);
-		$this->setImage($result->image);
-		$this->setRemark($result->remark);
-		$this->setFlowerBud($result->flower_bud);
-		$this->setAnthesis($result->anthesis);
-		$this->setRipe($result->ripe);
-		$this->setUnripe($result->unripe);
-		$this->setBudding($result->budding);
-		$this->setFall($result->fall);
+		$this->setId($result->{Collection_model::getColumn("id")});
+		$this->setImage($result->{Collection_model::getColumn("image")});
+		$this->setDate($result->{Collection_model::getColumn("date")});
+		$this->setRemark($result->{Collection_model::getColumn("remark")});
+		$this->setFlowerBud($result->{Collection_model::getColumn("flowerBud")});
+		$this->setAnthesis($result->{Collection_model::getColumn("anthesis")});
+		$this->setRipe($result->{Collection_model::getColumn("ripe")});
+		$this->setUnripe($result->{Collection_model::getColumn("unripe")});
+		$this->setBudding($result->{Collection_model::getColumn("budding")});
+		$this->setFall($result->{Collection_model::getColumn("fall")});
 		return $this;
 	}
 
@@ -209,80 +220,105 @@ Class Collection_model extends Abstract_model {
 	 * @see Abstract_model::getTableName()
 	 */
 	protected function getTableName() {
-		return self::TABLE_NAME;
+		return Collection_model::$tableName;
 	}
 
 	/**
 	 * (non-PHPdoc)
 	 * @see Abstract_model::getObjectAsArray()
 	 */
-	protected function getObjectAsArray() {
-		return get_object_vars($this);
+	public function getObjectAsArray() {
+		$data[Collection_model::getColumn("individual")] = $this->getIndividual();
+		$data[Collection_model::getColumn("date")] = $this->getDate();
+		$data[Collection_model::getColumn("image")] = $this->getImage();
+		$data[Collection_model::getColumn("remark")] = $this->getRemark();
+		$data[Collection_model::getColumn("flowerBud")] = $this->getFlowerBud();
+		$data[Collection_model::getColumn("anthesis")] = $this->getAnthesis();
+		$data[Collection_model::getColumn("ripe")] = $this->getRipe();
+		$data[Collection_model::getColumn("unripe")] = $this->getUnripe();
+		$data[Collection_model::getColumn("budding")] = $this->getBudding();
+		$data[Collection_model::getColumn("fall")] = $this->getFall();
+
+		return array_filter($data, function($val) {
+			return $val != null; 
+		});
+	}
+	
+	/**
+	 * Gets the object from the db with the specified $id
+	 * @param int $id
+	 * @return the query result
+	 */
+	public function get($id) {
+		$query = $this->db->select()->from($this->getTableName())->where(Collection_model::getColumn("id"), $id)->get();
+		if ($query->num_rows() == 1) {
+			$result = $query->row();
+			return $this->parseQueryResult($result);
+		}
+	
+	}
+	
+	public function update() {
+		$this->db->where(Collection_model::getMap("id"), $this->getId());
+		$op = $this->db->update(Collection_model::$tableName, $this->getObjectAsArray());
+		
+		return array(
+			"success" => $op
+		);
 	}
 
-	private function copyCollection($result) {
-		$dto = new CollectionDTO();
-		$dto->setId($result->{self::$MAPPING["id"]});
-		$dto->setIndividual($result->{self::$MAPPING["individual"]});
-		$dto->setImage($result->{self::$MAPPING["image"]});
-		$dto->setDate($result->{self::$MAPPING["date"]});
-		$dto->setRemark($result->{self::$MAPPING["remark"]});
-		$dto->setFlowerBud($result->{self::$MAPPING["flowerBud"]});
-		$dto->setAnthesis($result->{self::$MAPPING["anthesis"]});
-		$dto->setRipe($result->{self::$MAPPING["ripe"]});
-		$dto->setUnripe($result->{self::$MAPPING["unripe"]});
-		$dto->setBudding($result->{self::$MAPPING["budding"]});
-		$dto->setFall($result->{self::$MAPPING["fall"]});		
-		return $dto;
-	}
-	
-// 	public function getList($limit, $start, $sort, $dir) {
-// 		$this->db->from($this->getTableName());
-// 		$this->db->order_by($sort, $dir);
-// 		$this->db->limit($limit, $start);
-		
-// 		$collectionList = array();
-// 		$query = $this->db->get();
-		
-// 		foreach ($query->result() as $row) {
-// 			$collectionList[] =  $this->copyCollection($row);
-// 		}
-		
-// 		return $collectionList;		
-// 	}
-	
-	public function getListWithIndividual($limit, $start, $sort, $dir) {
-		$table = $this->getTableName();
-	
+	public function search($limit, $start, $sort, $dir) {
 		$this->db->start_cache();
-		$this->db->select("d." . self::$MAPPING["id"]);
-		$this->db->select("d." . self::$MAPPING["date"]);
-		$this->db->select("d." . self::$MAPPING["image"]);
-		$this->db->select("d." . self::$MAPPING["remark"]);
-		$this->db->select("d." . self::$MAPPING["flowerBud"]);
-		$this->db->select("d." . self::$MAPPING["anthesis"]);
-		$this->db->select("d." . self::$MAPPING["ripe"]);
-		$this->db->select("d." . self::$MAPPING["unripe"]);
-		$this->db->select("d." . self::$MAPPING["budding"]);
-		$this->db->select("d." . self::$MAPPING["fall"]);
-		$this->db->select("d." . self::$MAPPING["individual"]);
-		$this->db->select("s.scientific_name as species");
-		$this->db->select("g.name as genus");
-		$this->db->select("f.name as family");
-		$this->db->from("$table as d");
-		$this->db->join('t_individual as i', 'd.id_individual = i.id');
-		$this->db->join('t_species as s', 'i.id_species = s.id');
-		$this->db->join('t_genus as g', 's.id_genus = g.id');
-		$this->db->join('t_family as f', 'g.id_family = f.id');
-		$this->db->order_by(self::$MAPPING[$sort], $dir);
+		$this->db->select(Collection_model::getMap("id"));
+		$this->db->select(Collection_model::getMap("date"));
+		$this->db->select(Collection_model::getMap("image"));
+		$this->db->select(Collection_model::getMap("remark"));
+		$this->db->select(Collection_model::getMap("flowerBud"));
+		$this->db->select(Collection_model::getMap("anthesis"));
+		$this->db->select(Collection_model::getMap("ripe"));
+		$this->db->select(Collection_model::getMap("unripe"));
+		$this->db->select(Collection_model::getMap("budding"));
+		$this->db->select(Collection_model::getMap("fall"));
+		$this->db->select(Individual_model::getMap("id"));
+		$this->db->select(Species_model::getMap("id"));
+		$this->db->select(Species_model::getMap("scientificName"));
+		$this->db->select(Genus_model::getMap("id"));
+		$this->db->select(Genus_model::getMap("name"));
+		$this->db->select(Family_model::getMap("id"));
+		$this->db->select(Family_model::getMap("name"));
+		$this->db->from(Collection_model::$tableName);
+		$this->db->join(Individual_model::$tableName, Collection_model::getMap("individual") . " = " . Individual_model::getMap("id"));
+		$this->db->join(Species_model::$tableName, Individual_model::getMap("species") . " = " . Species_model::getMap("id"));
+		$this->db->join(Genus_model::$tableName, Species_model::getMap("genus") . " = " . Genus_model::getMap("id"));
+		$this->db->join(Family_model::$tableName, Genus_model::getMap("family") . " = " . Family_model::getMap("id"));
+		$this->db->order_by(Collection_model::getMap($sort), $dir);
 		$this->db->limit($limit, $start);
 		$this->db->stop_cache();
 		
-		$collectionList = array();
 		$query = $this->db->get();
+		$collectionList = array();
 	
 		foreach ($query->result() as $row) {
-			$collectionList[] = CollectionDTO::copy($row);
+			$family = new Family_model();
+			$family->parseQueryResult($row);
+			
+			$genus = new Genus_model();
+			$genus ->parseQueryResult($row);
+			$genus->setFamily($family);
+			
+			$species = new Species_model();
+			$species->parseQueryResult($row);
+			$species->setGenus($genus);
+			
+			$individual = new Individual_model();
+			$individual ->parseQueryResult($row);
+			$individual->setSpecies($species);
+			
+			$collection = new Collection_model();
+			$collection->parseQueryResult($row);
+			$collection->setIndividual($individual);
+			
+			$collectionList[] = CollectionDTO::copy($collection);
 		}
 		
 		$this->db->select("COUNT(*) as total_rows");

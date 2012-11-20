@@ -1,3 +1,17 @@
+_.extend(Backbone.Validation.messages, {
+    required: 'campo obrigatório',
+    min: 'valor deve ser maior ou igual a {1}',
+    max: 'valor deve ser menor ou igual a {1}',
+    range: 'valor deve estar entre {1} e {2}',
+    length: 'utilize {1} caracteres',
+    minLength: 'utilize pelo menos {1} caracteres',
+    maxLength: 'não utilize mais que {1} caracteres',
+    rangeLength: 'utilize entre {1} e {2} caracteres',
+    oneOf: 'utilize um entre: {1}',
+    equalTo: 'valores devem ser iguais',
+    pattern: 'utilize um {1} válido'
+});
+
 /*
  * EP namespace
  */

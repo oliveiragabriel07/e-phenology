@@ -85,6 +85,7 @@
 		
 		h3 {
 			color: #51B11D;
+			font-size: 22px;
 			border-bottom: 1px solid #ebebeb;
 			margin: 0 0 30px;
 		}

@@ -13,24 +13,25 @@ Class CollectionDTO {
 	public $species;
 	public $genus;
 	public $family;
-	public $individualId;
+	public $individual;
+	public $chart;
 	
-	public static function copy($result) {
+	public static function copy(Collection_model $collection) {
 		$dto = new CollectionDTO();
-		$dto->setId($result->{Collection_model::$MAPPING["id"]});
-		$dto->setIndividualId($result->{Collection_model::$MAPPING["individual"]});
-		$dto->setImage($result->{Collection_model::$MAPPING["image"]});
-		$dto->setDate($result->{Collection_model::$MAPPING["date"]});
-		$dto->setRemark($result->{Collection_model::$MAPPING["remark"]});
-		$dto->setFlowerBud($result->{Collection_model::$MAPPING["flowerBud"]});
-		$dto->setAnthesis($result->{Collection_model::$MAPPING["anthesis"]});
-		$dto->setRipe($result->{Collection_model::$MAPPING["ripe"]});
-		$dto->setUnripe($result->{Collection_model::$MAPPING["unripe"]});
-		$dto->setBudding($result->{Collection_model::$MAPPING["budding"]});
-		$dto->setFall($result->{Collection_model::$MAPPING["fall"]});
-		$dto->setSpecies($result->species);
-		$dto->setGenus($result->genus);
-		$dto->setFamily($result->family);
+		$dto->setId($collection->getId());
+		$dto->setImage($collection->getImage());
+		$dto->setDate($collection->getDate());
+		$dto->setRemark($collection->getRemark());
+		$dto->setFlowerBud($collection->getFlowerBud());
+		$dto->setAnthesis($collection->getAnthesis());
+		$dto->setRipe($collection->getRipe());
+		$dto->setUnripe($collection->getUnripe());
+		$dto->setBudding($collection->getBudding());
+		$dto->setFall($collection->getFall());
+		$dto->setIndividual($collection->getIndividual()->getId());
+		$dto->setSpecies($collection->getIndividual()->getSpecies()->getScientificName());
+		$dto->setGenus($collection->getIndividual()->getSpecies()->getGenus()->getName());
+		$dto->setFamily($collection->getIndividual()->getSpecies()->getGenus()->getFamily()->getName());
 		return $dto;
 	}
 	
@@ -138,12 +139,12 @@ Class CollectionDTO {
 		$this->family = $family;
 	}
 	
-	public function getIndividualId() {
-		return $this->individualId;
+	public function getIndividual() {
+		return $this->individual;
 	}
 	
-	public function setIndividualId($individualId) {
-		$this->individualId = $individualId;
+	public function setIndividual($individual) {
+		$this->individual = $individual;
 	}
 }
 

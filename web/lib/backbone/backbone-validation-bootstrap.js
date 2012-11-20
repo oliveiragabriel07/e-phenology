@@ -8,7 +8,7 @@ _.extend(Backbone.Validation.callbacks, {
 			// CAUTION: calling tooltip("hide") on an uninitialized tooltip
 			// causes bootstraps tooltips to crash somehow...
 			if (control.data("tooltip"))
-				control.tooltip("hide");
+				control.tooltip("disable");
 		} else if (control.data("error-style") === "inline") {
 			group.find(".help-inline.error-message").remove();
 		} else if (control.data("error-style") !== "none") {
@@ -24,10 +24,9 @@ _.extend(Backbone.Validation.callbacks, {
 			var position = control.data("tooltip-position") || "right";
 			control.tooltip({
 				placement : position,
-				trigger : "manual",
 				title : error
 			});
-			control.tooltip("show");
+			control.tooltip("enable");
 		} else if (control.data("error-style") === "inline") {
 			if (group.find(".help-inline").length === 0) {
 				group.find(".controls").append("<span class=\"help-inline error-message\"></span>");

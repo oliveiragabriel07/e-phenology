@@ -142,6 +142,7 @@ var GridView = Backbone.View.extend({
 			item = new GridView.Item({
 				columns: self.columns,
 				model: model,
+				tooltip: self.rowTip,
 				grid: self
 			});
 			item.on('click', self.onItemClick, self);
@@ -220,6 +221,9 @@ GridView.Item = Backbone.View.extend({
 	initialize: function(cfg) {
 		this.columns = cfg.columns;
 		this.grid = cfg.grid;
+		this.tooltip = cfg.tooltip;
+		
+		this.model.on('change', this.render, this);
 	},
 	
 	render: function() {
@@ -227,11 +231,20 @@ GridView.Item = Backbone.View.extend({
 			m = this.model,
 			text, renderer;
 			
+		this.$el.empty();
+			
 		_.each(this.columns, function(c) {
 			renderer = c.renderer || self.defaultRenderer;
 			text = renderer.call(self.grid, m.get(c.index), m, self);
 			self.$el.append($('<td>').text(text));
 		});
+		
+		if (this.tooltip) {
+			this.$el.tooltip({
+				title: this.tooltip,
+				placement: 'bottom' 
+			});
+		}
 		
 		return this;
 	},

@@ -18,12 +18,16 @@ img {
 }
 
 html, body {
-	font: 14px Arial, Helvetica, sans-serif;
+	font: 12px Arial, Helvetica, sans-serif;
 	height: 100%;
 }
 
+label, input, button, select, textarea {
+	font-size: 12px;
+}
+
 body {
-	background-color: #F2F2F2;
+	background-color: #F3F3F3;
 	min-width: 650px;
 }
 
@@ -45,3 +49,14 @@ h4 {
 	font-weight: bold;
 }
 
+button [class^="icon-"], [class*=" icon-"] {
+	opacity: 0.7;
+}
+
+.side-menu {
+	font-size: 14px;
+}
+
+.row {
+	margin-bottom: 15px;
+}
