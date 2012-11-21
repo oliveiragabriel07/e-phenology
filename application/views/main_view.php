@@ -6,8 +6,9 @@
 	
 	<!--  styles -->
 	<link rel="stylesheet" type="text/css" href="../web/lib/bootstrap/css/bootstrap.css" />	
-	<link rel="stylesheet" type="text/css" href="../web/lib/dataTables/css/dt.bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="../web/lib/fancybox/jquery.fancybox.css" />
 	<link rel="stylesheet" type="text/css" href="../web/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="../web/css/table.css" />
 
 	<!-- lib -->
 	<script type="text/javascript" src="../web/lib/jquery/jquery.js"></script>
@@ -18,6 +19,7 @@
 	<script type="text/javascript" src="../web/lib/backbone/backbone-validation.js"></script>
 	<script type="text/javascript" src="../web/lib/backbone/backbone-validation-bootstrap.js"></script>
 	<script type="text/javascript" src="../web/lib/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../web/lib/fancybox/jquery.fancybox.js"></script>
 	<script type="text/javascript" src="../web/lib/Array.js"></script>
 	<script type="text/javascript" src="../web/lib/date.js"></script>
 	

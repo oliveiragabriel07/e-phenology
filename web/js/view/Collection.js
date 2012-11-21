@@ -5,11 +5,11 @@ EP.view.Collection = EP.view.AbstractPage.extend({
     
 	barTpl: _.template([
 		'<div class="row">',
-			// '<div class="btn-group">',
-				'<button title="Novo registro" id="new" class="btn"><i class="icon-plus"></i></button>',
-				// '<button title="Importar planilha" id="import" class="btn"><i class="icon-import"></i></button>',
-				// '<button title="Exportar planilha" id="download" class="btn"><i class="icon-download-alt"></i></button>',
-			// '</div>',
+			'<div class="btn-group">',
+				'<button id="new" class="btn"><i rel="tooltip" title="Novo registro" class="icon-plus"></i></button>',
+				'<button id="import" class="btn"><i rel="tooltip" title="Importar planilha" class="icon-import"></i></button>',
+				'<button id="download" class="btn"><i rel="tooltip" title="Exportar planilha" class="icon-download-alt"></i></button>',
+			'</div>',
 		'</div>'
 	].join('')),
 	
@@ -25,7 +25,7 @@ EP.view.Collection = EP.view.AbstractPage.extend({
         this.$body.empty();
         this.$body.append(this.barTpl());
         this.$body.append(this.table.render().$el);
-        $('button', this.$el).tooltip();
+        $('*[rel="tooltip"]', this.$el).tooltip();
         
         return this;
     },
