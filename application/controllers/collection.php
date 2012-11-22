@@ -15,12 +15,24 @@ class Collection extends REST_Controller {
 		}
 	}
 	
+	function index_post() {
+		$collection = new Collection_model();
+		$collection->setIndividual($this->post('individual'));
+		$collection->setDate($this->post('date'));
+		$collection->setRemark($this->post('remark'));
+		$collection->setFlowerBud($this->post('flowerBud'));
+		$collection->setAnthesis($this->post('anthesis'));
+		$collection->setRipe($this->post('ripe'));
+		$collection->setUnripe($this->post('unripe'));
+		$collection->setBudding($this->post('budding'));
+		$this->response($collection->add());
+	}
+	
 	function index_get() {
 		$this->response($this->collection->get($this->get('id')));
 	}
 	
 	function index_put() {
-		// TODO validate data
 		$collection = new Collection_model();
 		$collection->setId($this->put('id'));
 		$collection->setFlowerBud($this->put('flowerBud'));

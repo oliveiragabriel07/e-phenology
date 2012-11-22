@@ -228,6 +228,7 @@ Class Collection_model extends Abstract_model {
 	 * @see Abstract_model::getObjectAsArray()
 	 */
 	public function getObjectAsArray() {
+		$data[Collection_model::getColumn("id")] = $this->getId();
 		$data[Collection_model::getColumn("individual")] = $this->getIndividual();
 		$data[Collection_model::getColumn("date")] = $this->getDate();
 		$data[Collection_model::getColumn("image")] = $this->getImage();
@@ -256,6 +257,15 @@ Class Collection_model extends Abstract_model {
 			return $this->parseQueryResult($result);
 		}
 	
+	}
+	
+	public function add() {
+		$op = $this->db->insert(Collection_model::$tableName, $this->getObjectAsArray());
+		$this->id = $this->db->insert_id();
+		
+		return  array(
+			"success" => $op
+		);
 	}
 	
 	public function update() {

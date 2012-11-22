@@ -86,7 +86,7 @@ EP.AppRouter = Backbone.Router.extend({
         'user/:id': 'userDetails',
         'agenda' : 'showAgenda'
     },
-
+    
     initialize:function () {
         this.userModel = new EP.model.User(EP.BootstrapData);
         

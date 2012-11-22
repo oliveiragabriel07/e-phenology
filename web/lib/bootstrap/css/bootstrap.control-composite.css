@@ -1,0 +1,38 @@
+.control-composite input,
+.control-composite textarea,
+.control-composite select,
+.control-composite .help-inline,
+.control-composite .uneditable-input,
+.control-composite .input-prepend,
+.control-composite .input-append {
+  display: inline-block;
+  *display: inline;
+  /* IE7 inline-block hack */
+
+  *zoom: 1;
+  vertical-align: middle;
+}
+.control-composite .hide {
+  display: none;
+}
+.control-composite label,
+.control-composite .btn-group {
+  display: inline-block;
+}
+.control-composite .input-append,
+.control-composite .input-prepend {
+  margin-bottom: 0;
+}
+.control-composite .radio,
+.control-composite .checkbox {
+  padding-left: 0;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+
+.control-composite .radio input[type="radio"],
+.control-composite .checkbox input[type="checkbox"] {
+  float: left;
+  margin-right: 3px;
+  margin-left: 0;
+}

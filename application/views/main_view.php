@@ -5,7 +5,8 @@
 	<title>e-phenology</title> 
 	
 	<!--  styles -->
-	<link rel="stylesheet" type="text/css" href="../web/lib/bootstrap/css/bootstrap.css" />	
+	<link rel="stylesheet" type="text/css" href="../web/lib/bootstrap/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="../web/lib/bootstrap/css/bootstrap.control-composite.css" />	
 	<link rel="stylesheet" type="text/css" href="../web/lib/fancybox/jquery.fancybox.css" />
 	<link rel="stylesheet" type="text/css" href="../web/css/style.css" />
 	<link rel="stylesheet" type="text/css" href="../web/css/table.css" />

@@ -53,6 +53,18 @@ button [class^="icon-"], [class*=" icon-"] {
 	opacity: 0.7;
 }
 
+select, textarea,
+input[type="text"], input[type="password"],
+input[type="datetime"], input[type="datetime-local"],
+input[type="date"], input[type="month"],
+input[type="time"], input[type="week"],
+input[type="number"], input[type="email"],
+input[type="url"], input[type="search"],
+input[type="tel"], input[type="color"],
+.uneditable-input {
+	font-size: 12px;
+}
+
 .side-menu {
 	font-size: 14px;
 }
@@ -61,6 +73,12 @@ button [class^="icon-"], [class*=" icon-"] {
 	margin-bottom: 15px;
 }
 
+.hint {
+	font-size: 10px;
+	color: #999999;
+	padding-left: 3px;
+	padding-bottom: 2px;
+}
 
 /*
  * Collection data
@@ -81,6 +99,15 @@ table div.details-wrapper {
 	padding: 20px 10px 10px;
 }
 
+p.form-section {
+	margin: 20px 0 10px;
+	border-bottom: 1px solid #EEE;
+	padding-bottom: 5px;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: #666;
+}
+
 .form-details {
 	margin: 0;
 }
@@ -97,12 +124,38 @@ table div.details-wrapper {
 	padding: 10px;
 }
 
-.form-column {
+.form-details .form-column {
 	padding: 0 10px;
 }
-
 
 .form-actions {
 	background-color: transparent;
 	margin: 0;
+}
+
+.form-register .span1 {
+	width: 70px;
+}
+
+.form-register .span2 {
+	width: 150px;
+	margin-right: 5px;
+}
+
+.form-register .span3 {
+	width: 220px;
+	margin-right: 5px;
+}
+
+.form-register .image-wrapper {
+	padding: 5px;
+	border: 1px solid #CCCCCC;
+	background-color: #FFFFFF;
+	display: inline-block;
+}
+
+.form-register img.image {
+	height: 210px;
+	width: 210px;
+	background-color: #CCCCCC;
 }

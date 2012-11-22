@@ -72,7 +72,7 @@ var GridView = Backbone.View.extend({
 		
 		// bind collection
 		this.collection.on('reset', this.refresh, this);
-		this.collection.meta.on('change', this.onMetaChange, this);
+		this.collection.on('add', this.refresh, this);
 		this.pages.on('pageclick', this.onPageClick, this);
 		
 		this.tableCls = (this.striped ? ' table-striped' : '')
@@ -184,6 +184,7 @@ var GridView = Backbone.View.extend({
 			start: 0,
 			length: parseInt(select.val(), 10)
 		});
+		this.collection.getPaginated();
 	},
 	
 	onHeaderClick: function(e) {
@@ -196,6 +197,7 @@ var GridView = Backbone.View.extend({
 			sortField: field,
 			sortDir: dir
 		});
+		this.collection.getPaginated();
 	},
 	
 	onPageClick: function(toPage) {
@@ -204,9 +206,6 @@ var GridView = Backbone.View.extend({
 			start = (toPage - 1) * length;
 		
 		meta.set('start', start);
-	},
-	
-	onMetaChange: function() {
 		this.collection.getPaginated();
 	}
 });
