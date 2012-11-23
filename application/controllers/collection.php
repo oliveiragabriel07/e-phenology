@@ -35,6 +35,7 @@ class Collection extends REST_Controller {
 	function index_put() {
 		$collection = new Collection_model();
 		$collection->setId($this->put('id'));
+		$collection->setRemark($this->put('remark'));
 		$collection->setFlowerBud($this->put('flowerBud'));
 		$collection->setAnthesis($this->put('anthesis'));
 		$collection->setRipe($this->put('ripe'));

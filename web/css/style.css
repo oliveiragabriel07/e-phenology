@@ -80,6 +80,12 @@ input[type="tel"], input[type="color"],
 	padding-bottom: 2px;
 }
 
+
+.form-actions {
+	background-color: transparent;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
 /*
  * Collection data
  */
@@ -125,12 +131,12 @@ p.form-section {
 }
 
 .form-details .form-column {
-	padding: 0 10px;
+	padding-right: 10px;
 }
-
-.form-actions {
-	background-color: transparent;
-	margin: 0;
+.form-details img.image {
+	min-height: 150px;
+	max-height: 250px;
+	background-color: #CCCCCC;
 }
 
 .form-register .span1 {
@@ -147,7 +153,8 @@ p.form-section {
 	margin-right: 5px;
 }
 
-.form-register .image-wrapper {
+.image-wrapper {
+	margin-right: 15px;
 	padding: 5px;
 	border: 1px solid #CCCCCC;
 	background-color: #FFFFFF;
@@ -155,7 +162,7 @@ p.form-section {
 }
 
 .form-register img.image {
-	height: 210px;
-	width: 210px;
+	min-height: 175px;
+	max-height: 210px;
 	background-color: #CCCCCC;
 }

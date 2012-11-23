@@ -22,6 +22,7 @@ EP.view = {};
 EP.model = {};
 EP.collection = {};
 EP.BLANK_IMAGE = '../web/img/blank.gif';
+EP.EMPTY_PIC = '../web/img/pic_bg.jpg';
 EP.emptyFn = function() {};
 EP.PagesBugger = (function(size) {
 	var buff = {

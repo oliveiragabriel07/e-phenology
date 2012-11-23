@@ -95,11 +95,10 @@ EP.view.Collection = EP.view.AbstractPage.extend({
 EP.view.Collection.FormNew = Backbone.View.extend({
     template: _.template([
         '<h3>Novo registro</h3>',
-        '<div class="span3" style="margin-right: 20px;">',
+        '<div class="span3">',
             '<div class="image-wrapper">',
                 // '<input type="file" />',
-                '<img class="image" />',
-                '',
+                '<img class="image" src="<%= EP.EMPTY_PIC %>" />',
             '</div>',
         '</div>',
         
@@ -294,6 +293,7 @@ EP.view.Collection.FormNew = Backbone.View.extend({
         });
         
         values.date = $.format('{0}-{1}-{2}', values.year, values.month, values.day);
+        values.remark = values.remark || ' ';
         return values;
     }
     
@@ -371,53 +371,67 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 	className: 'details-wrapper span12', 
 	
 	template: _.template([
-		'<div class="span4">',
-		'</div>',
-		'<form class="form-details span8">',
-			'<div class="span4 form-column">',
-				'<div class="control-group">',
-					'<label class="control-label" for="flowerBud">Botao</label>',
-					'<div class="controls">',
-						'<input type="text" id="flowerBud" name="flowerBud" data-error-style="tooltip" class="input-block-level" value="<%= flowerBud %>" />',
-					'</div>',
-				'</div>',
-				'<div class="control-group">',
-					'<label class="control-label" for="anthesis">Antese</label>',
-					'<div class="controls">',
-						'<input type="text" id="anthesis" name="anthesis" data-error-style="tooltip" class="input-block-level" value="<%= anthesis %>" />',
-					'</div>',
-				'</div>',
-			'</div>',
-			'<div class="span4 form-column">',
-				'<div class="control-group">',
-					'<label class="control-label" for="unripe">Imaturo</label>',
-					'<div class="controls">',
-						'<input type="text" id="unripe" name="unripe" data-error-style="tooltip" class="input-block-level" value="<%= unripe %>" />',
-					'</div>',
-				'</div>',
-				'<div class="control-group">',
-					'<label class="control-label" for="ripe">Maduro</label>',
-					'<div class="controls">',
-						'<input type="text" id="ripe" name="ripe" data-error-style="tooltip" class="input-block-level" value="<%= ripe %>" />',
-					'</div>',
-				'</div>',
-			'</div>',
-			'<div class="span4 form-column">',
-				'<div class="control-group">',
-					'<label class="control-label" for="budding">Brotamento</label>',
-					'<div class="controls">',
-						'<input type="text" id="budding" name="budding" data-error-style="tooltip" data-tooltip-position="left" class="input-block-level" value="<%= budding %>" />',
-					'</div>',
-				'</div>',
-				'<div class="control-group">',
-					'<label class="control-label" for="fall">Queda</label>',
-					'<div class="controls">',
-						'<input type="text" id="fall" name="fall" data-error-style="tooltip" data-tooltip-position="left" class="input-block-level" value="<%= fall %>" />',
-					'</div>',
-				'</div>',									
-			'</div>',
+	    '<form class="form-details span12">',
+            '<div class="span4">',
+                '<div class="image-wrapper">',
+                    // '<input type="file" />',
+                    '<img class="image" src="<%= image || EP.EMPTY_PIC %>"/>',
+                '</div>',
+            '</div>',
+		
+            '<div class="span8">',
+                '<div class="span4 form-column">',
+                    '<div class="control-group">',
+                        '<label class="control-label" for="flowerBud">Botao</label>',
+                        '<div class="controls">',
+                            '<input type="text" id="flowerBud" name="flowerBud" data-error-style="tooltip" class="input-block-level" value="<%= flowerBud %>" />',
+                        '</div>',
+                    '</div>',
+                    '<div class="control-group">',
+                        '<label class="control-label" for="anthesis">Antese</label>',
+                        '<div class="controls">',
+                            '<input type="text" id="anthesis" name="anthesis" data-error-style="tooltip" class="input-block-level" value="<%= anthesis %>" />',
+                        '</div>',
+                    '</div>',
+                '</div>',
+                '<div class="span4 form-column">',
+                    '<div class="control-group">',
+                        '<label class="control-label" for="unripe">Imaturo</label>',
+                        '<div class="controls">',
+                            '<input type="text" id="unripe" name="unripe" data-error-style="tooltip" class="input-block-level" value="<%= unripe %>" />',
+                        '</div>',
+                        '</div>',
+                        '<div class="control-group">',
+                            '<label class="control-label" for="ripe">Maduro</label>',
+                            '<div class="controls">',
+                                '<input type="text" id="ripe" name="ripe" data-error-style="tooltip" class="input-block-level" value="<%= ripe %>" />',
+                            '</div>',
+                        '</div>',
+                    '</div>',
+                    '<div class="span4 form-column">',
+                        '<div class="control-group">',
+                            '<label class="control-label" for="budding">Brotamento</label>',
+                            '<div class="controls">',
+                                '<input type="text" id="budding" name="budding" data-error-style="tooltip" data-tooltip-position="left" class="input-block-level" value="<%= budding %>" />',
+                            '</div>',
+                        '</div>',
+                        '<div class="control-group">',
+                        '<label class="control-label" for="fall">Queda</label>',
+                        '<div class="controls">',
+                            '<input type="text" id="fall" name="fall" data-error-style="tooltip" data-tooltip-position="left" class="input-block-level" value="<%= fall %>" />',
+                        '</div>',
+                    '</div>',									
+                '</div>',
+            '</div>',
+            
+            '<div class="control-group form-column span8">',
+                '<div class="controls">',
+                    '<textarea rows="2" placeholder="Observações" id="remark" name="remark" class="input-block-level"><%= remark %></textarea>',
+                '</div>',
+            '</div>',
+            
 			'<div class="clearfix"></div>',
-			'<div class="form-actions">',
+			'<div class="form-actions span12">',
 				'<button type="submit" id="save" class="btn btn-primary" style="margin-right: 8px;">Salvar</button>',
 				'<button type="button" id="cancel" class="btn">Cancelar</button>',
 			'</div>',
@@ -494,16 +508,15 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 
 // other methods
 	getValues: function() {
-		var fields = $('input', this.$form),
-			self = this,
-			values = {}, field;
-		
-		fields.each(function(i, o) {
-			field = $(o);
-			values[field.attr('name')] = field.val();
-		});
-		
-		return values;
+        var valuesArray = this.$form.serializeArray(),
+            values = {};
+            
+        _.each(valuesArray, function(v) {
+            values[v.name] = v.value;
+        });
+        
+        values.remark = values.remark || ' ';
+        return values;
 	},
 	
 	open: function() {
@@ -586,7 +599,7 @@ EP.model.Collection = Backbone.Model.extend({
 		individual : '',
 		date : '',
 		image : '',
-		remark : '',
+		remark : ' ',
 		flowerBud : 0,
 		anthesis : 0,
 		ripe : 0,
@@ -630,6 +643,7 @@ EP.model.Collection = Backbone.Model.extend({
 			return {};
 		}
 		
+		response.remark = response.remark === ' ' ? '' : response.remark; 
 		response.date = Date.parse(response.date);
         return response;
     }
