@@ -21,6 +21,8 @@
 	<script type="text/javascript" src="../web/lib/backbone/backbone-validation-bootstrap.js"></script>
 	<script type="text/javascript" src="../web/lib/bootstrap/js/bootstrap.js"></script>
 	<script type="text/javascript" src="../web/lib/fancybox/jquery.fancybox.js"></script>
+	<script type="text/javascript" src="../web/lib/highcharts/highcharts.src.js"></script>
+	
 	<script type="text/javascript" src="../web/lib/Array.js"></script>
 	<script type="text/javascript" src="../web/lib/date.js"></script>
 	

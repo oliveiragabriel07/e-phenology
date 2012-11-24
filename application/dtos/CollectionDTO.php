@@ -14,9 +14,9 @@ Class CollectionDTO {
 	public $genus;
 	public $family;
 	public $individual;
-	public $chart;
+	public $graphic;
 	
-	public static function copy(Collection_model $collection) {
+	public static function copy(Collection_model $collection, $graphic) {
 		$dto = new CollectionDTO();
 		$dto->setId($collection->getId());
 		$dto->setImage($collection->getImage());
@@ -32,6 +32,11 @@ Class CollectionDTO {
 		$dto->setSpecies($collection->getIndividual()->getSpecies()->getScientificName());
 		$dto->setGenus($collection->getIndividual()->getSpecies()->getGenus()->getName());
 		$dto->setFamily($collection->getIndividual()->getSpecies()->getGenus()->getFamily()->getName());
+		
+		if ($graphic != null) {
+			$dto->setGraphic($graphic);
+		}
+		
 		return $dto;
 	}
 	
@@ -145,6 +150,14 @@ Class CollectionDTO {
 	
 	public function setIndividual($individual) {
 		$this->individual = $individual;
+	}
+	
+	public function getGraphic() {
+		return $this->graphic;
+	}
+	
+	public function setGraphic($graphic) {
+		$this->graphic = $graphic;
 	}
 }
 

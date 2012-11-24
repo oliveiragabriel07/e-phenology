@@ -117,8 +117,11 @@ EP.AppRouter = Backbone.Router.extend({
         // activate menu
         this.navMenu.setActiveItem('data');
         
-		var collectionView = new EP.view.Collection();
-        this.mainEl.html(collectionView.render().$el);
+        if (!this.collectionView) {
+            this.collectionView = new EP.view.Collection().render();
+        }
+        
+        this.mainEl.html(this.collectionView.$el);
     },
     
     individualList: function() {

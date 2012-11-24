@@ -52,7 +52,6 @@ EP.view.Collection = EP.view.AbstractPage.extend({
 		
 		$.fancybox({
 		    content: form.render().$el,
-		    modal: true,
 		    autoSize: false,
 		    height: 'auto',
 		    width: '500',
@@ -334,21 +333,24 @@ EP.view.Collection.Table = GridView.extend({
 			this.editing.close(true);
 		}
 		
-		this.editing = new EP.view.Collection.Table.EditItem({
-			model: model,
-			view: view
+		model.fetch({
+		    url: '../collection/index/id/' + model.get('id'),
+		    success: function() {
+                self.editing = new EP.view.Collection.Table.EditItem({
+                    model: model,
+                    view: view
+                });
+                
+                view.isEditing = true; 
+                view.$el.after($('<tr>')
+                    .addClass('details')
+                    .html($('<td>')
+                        .attr('colspan', self.columns.length)
+                        .html(self.editing.render().$el)
+                    )
+                );
+		    }
 		});
-		
-		view.isEditing = true; 
-		view.$el.after($('<tr>')
-			.addClass('details')
-			.html($('<td>')
-				.attr('colspan', this.columns.length)
-				.html(this.editing.render().$el)
-			)
-		);
-		
-		this.editing.open();
     },
     
 	onBeforeLoad: function() {
@@ -368,10 +370,24 @@ EP.view.Collection.Table = GridView.extend({
 EP.view.Collection.Table.EditItem = Backbone.View.extend({
 	tagName: 'div',
 	
-	className: 'details-wrapper span12', 
+	className: 'details-wrapper span12',
+	
+	sectionTpl: _.template([
+	    '<p class="form-section2">',
+            '<span class="color">',
+            '<span class="title"><%= title %></span>',
+            '<span class="subtitle"><%= subtitle || "" %></span>',
+        '</p>'
+    ].join('')),
 	
 	template: _.template([
 	    '<form class="form-details span12">',
+            '<div class="form-section2">',
+                '<span class="color" />',
+                '<p class="title"><%= individual + " - " + species%></p>',
+                '<p class="subtitle"><%= date.toString("dd/MM/yyyy") %></p>',
+            '</div>',
+            	    
             '<div class="span4">',
                 '<div class="image-wrapper">',
                     // '<input type="file" />',
@@ -424,7 +440,7 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
                 '</div>',
             '</div>',
             
-            '<div class="control-group form-column span8">',
+            '<div class="control-group form-column span8" style="margin-top: 5px;">',
                 '<div class="controls">',
                     '<textarea rows="2" placeholder="Observações" id="remark" name="remark" class="input-block-level"><%= remark %></textarea>',
                 '</div>',
@@ -435,7 +451,16 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 				'<button type="submit" id="save" class="btn btn-primary" style="margin-right: 8px;">Salvar</button>',
 				'<button type="button" id="cancel" class="btn">Cancelar</button>',
 			'</div>',
-		'</form>'
+		'</form>',
+		
+		'<div class="span12">',
+            '<div class="form-section2">',
+                '<span class="color" />',
+                '<p class="title">Evolução</p>',
+                '<p class="subtitle">Fenofases</p>',
+            '</div>',
+            '<div class="phenophase-chart"></div>',
+		'</div>'
 	].join('')),
 	
 	events: {
@@ -445,21 +470,33 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 	},
 	
 	initialize: function(cfg) {
+	    var self = this;
 		this.view = cfg.view;
 	},
 	
 	render: function() {
-		Backbone.Validation.bind(this);
-		
+	    var self = this;
+	    
+	    Backbone.Validation.bind(this);
+	    
 		this.$el.html(this.template(this.model.toJSON()));
 		this.$el.hide();
 		
 		this.$form = this.$('form');
-			
+		this.$chartCt = this.$('.phenophase-chart');
+		
+		setTimeout(function() {
+		    self.open();
+		}, 10);
+		
 		return this;
 	},
 	
 // listeners
+    afterShow: function() {
+        this.buildChart();
+    },
+    
 	onBtnSaveClick: function(e) {
 		e.preventDefault();
 		
@@ -507,6 +544,68 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 	},
 
 // other methods
+    buildChart: function() {
+        var data = this.model.get('graphic');
+        
+        Highcharts.setOptions({
+            lang: {
+                months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                shortMonths: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                weekdays: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+            }
+        });
+        
+        this.chart = new Highcharts.Chart({
+            chart : {
+                renderTo : this.$chartCt[0],
+                borderRadius: 3,
+                height: 300,
+                type : 'line'
+            },
+            legend: {
+                align: 'right',
+                layout: 'vertical',
+                verticalAlign: 'middle',
+                itemStyle: {
+                    paddingBottom: '10px'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            title : {
+                text : 'Evolução das fenofases'
+            },
+            xAxis : {
+                type: 'datetime'
+            },
+            yAxis : {
+                title : {
+                    text : 'Valor'
+                }
+            },
+            series : [{
+                name : 'Botão',
+                data : data.flowerBudList
+            }, {
+                name : 'Antese',
+                data : data.anthesisList
+            },{
+                name : 'Maduro',
+                data : data.ripeList
+            }, {
+                name : 'Imaturo',
+                data : data.unripeList
+            },{
+                name : 'Brotamento',
+                data : data.buddingList
+            }, {
+                name : 'Queda',
+                data : data.fallList
+            }]
+        });        
+    },
+    
 	getValues: function() {
         var valuesArray = this.$form.serializeArray(),
             values = {};
@@ -520,7 +619,8 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 	},
 	
 	open: function() {
-		this.$el.slideDown('fast');
+	    var self = this;
+		this.$el.slideDown('fast', $.proxy(this.afterShow, this));
 		this.view.$el.addClass('active');
 		this.view.$el.tooltip('disable');
 	},
@@ -637,6 +737,25 @@ EP.model.Collection = Backbone.Model.extend({
 			range: [0, 100]
 		}
 	},
+	
+	parseSeries: function(series) {
+	    var k, s, i, d, point;
+	    
+	    for (k in series) {
+	        if (series.hasOwnProperty(k)) {
+	            s = series[k];
+	            for (i=0; i<s.length; i++) {
+	                point = s[i];
+	                d = Date.parseExact(point[0], 'yyyy-MM-dd HH:mm:ss');
+	                
+	                point[0] = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+	                point[1] = parseInt(point[1], 10);
+	            }
+	        }
+	    }
+	    
+	    return series;
+	},
     
     parse: function(response) {
 		if (response.success) {
@@ -644,7 +763,11 @@ EP.model.Collection = Backbone.Model.extend({
 		}
 		
 		response.remark = response.remark === ' ' ? '' : response.remark; 
-		response.date = Date.parse(response.date);
+		response.date = Date.parseExact(response.date, 'yyyy-MM-dd HH:mm:ss');
+		if (response.graphic) {
+		    response.graphic = this.parseSeries(response.graphic);
+		}
+		
         return response;
     }
 });

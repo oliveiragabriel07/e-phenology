@@ -166,3 +166,36 @@ p.form-section {
 	max-height: 210px;
 	background-color: #CCCCCC;
 }
+
+.form-section2 {
+	padding-bottom: 5px;
+	margin: 10px 0 12px;
+	border-bottom: 1px solid #E3E3E3;	
+}
+
+.form-section2 span.color {
+	display: block;
+	height: 42px;
+	line-height: 40px;
+	width: 4px;
+	background-color: #923496;
+	float: left;
+	margin-right: 10px;
+}
+
+.form-section2 .title {
+	margin-bottom: 5px;
+	font-size: 14px;
+	color: 222;
+	font-weight: bold;
+	text-transform: uppercase;
+	line-height: 20px;	
+}
+
+.form-section2 .subtitle {
+	margin-bottom: 5px;
+	font-size: 12px;
+	color: #666;
+	line-height: 14px;	
+}
+

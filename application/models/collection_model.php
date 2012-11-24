@@ -5,6 +5,7 @@ require_once 'application/models/genus_model.php';
 require_once 'application/models/species_model.php';
 require_once 'application/models/individual_model.php';
 require_once 'application/dtos/CollectionDTO.php';
+require_once 'application/dtos/GraphicDTO.php';
 
 Class Collection_model extends Abstract_model {
 
@@ -245,18 +246,98 @@ Class Collection_model extends Abstract_model {
 		});
 	}
 	
+	public function getGraphic() {
+		$this->db->select(Collection_model::getMap("date"));
+		$this->db->select(Collection_model::getMap("flowerBud"));
+		$this->db->select(Collection_model::getMap("anthesis"));
+		$this->db->select(Collection_model::getMap("ripe"));
+		$this->db->select(Collection_model::getMap("unripe"));
+		$this->db->select(Collection_model::getMap("budding"));
+		$this->db->select(Collection_model::getMap("fall"));
+		$this->db->from(Collection_model::$tableName);
+		$this->db->where(Collection_model::getMap("individual"), $this->getIndividual()->getId());
+		$this->db->order_by(Collection_model::getMap("date"), "asc");
+		$query = $this->db->get();
+		
+		
+		if ($query->num_rows() == 0) {
+			return null;
+		}
+		
+		foreach ($query->result() as $row) {
+			$date = $row->{Collection_model::getColumn("date")};
+			$flowerBudList[] = array($date, $row->{Collection_model::getColumn("flowerBud")});
+			$anthesisList[] = array($date, $row->{Collection_model::getColumn("anthesis")});
+			$ripeList[] = array($date, $row->{Collection_model::getColumn("ripe")});
+			$unripeList[] = array($date, $row->{Collection_model::getColumn("unripe")});
+			$buddingList[] = array($date, $row->{Collection_model::getColumn("budding")});
+			$fallList[] = array($date, $row->{Collection_model::getColumn("fall")});
+		}
+		
+		$graphic = new GraphicDTO();
+		$graphic->setFlowerBudList($flowerBudList);
+		$graphic->setAnthesisList($anthesisList);
+		$graphic->setRipeList($ripeList);
+		$graphic->setUnripeList($unripeList);
+		$graphic->setBuddingList($buddingList);
+		$graphic->setFallList($fallList);
+		
+		return $graphic;
+	}
+	
 	/**
 	 * Gets the object from the db with the specified $id
 	 * @param int $id
 	 * @return the query result
 	 */
-	public function get($id) {
-		$query = $this->db->select()->from($this->getTableName())->where(Collection_model::getColumn("id"), $id)->get();
+	public function get() {
+		$this->db->select(Collection_model::getMap("id"));
+		$this->db->select(Collection_model::getMap("date"));
+		$this->db->select(Collection_model::getMap("image"));
+		$this->db->select(Collection_model::getMap("remark"));
+		$this->db->select(Collection_model::getMap("flowerBud"));
+		$this->db->select(Collection_model::getMap("anthesis"));
+		$this->db->select(Collection_model::getMap("ripe"));
+		$this->db->select(Collection_model::getMap("unripe"));
+		$this->db->select(Collection_model::getMap("budding"));
+		$this->db->select(Collection_model::getMap("fall"));
+		$this->db->select(Individual_model::getMap("id"));
+		$this->db->select(Species_model::getMap("id"));
+		$this->db->select(Species_model::getMap("scientificName"));
+		$this->db->select(Genus_model::getMap("id"));
+		$this->db->select(Genus_model::getMap("name"));
+		$this->db->select(Family_model::getMap("id"));
+		$this->db->select(Family_model::getMap("name"));
+		$this->db->from(Collection_model::$tableName);
+		$this->db->join(Individual_model::$tableName, Collection_model::getMap("individual") . " = " . Individual_model::getMap("id"));
+		$this->db->join(Species_model::$tableName, Individual_model::getMap("species") . " = " . Species_model::getMap("id"));
+		$this->db->join(Genus_model::$tableName, Species_model::getMap("genus") . " = " . Genus_model::getMap("id"));
+		$this->db->join(Family_model::$tableName, Genus_model::getMap("family") . " = " . Family_model::getMap("id"));
+		$this->db->where(Collection_model::getColumn("id"), $this->getId());
+		$query = $this->db->get();
+		
 		if ($query->num_rows() == 1) {
-			$result = $query->row();
-			return $this->parseQueryResult($result);
+			$row = $query->row();
+			$family = new Family_model();
+			$family->parseQueryResult($row);
+				
+			$genus = new Genus_model();
+			$genus ->parseQueryResult($row);
+			$genus->setFamily($family);
+				
+			$species = new Species_model();
+			$species->parseQueryResult($row);
+			$species->setGenus($genus);
+				
+			$individual = new Individual_model();
+			$individual ->parseQueryResult($row);
+			$individual->setSpecies($species);
+				
+			$this->parseQueryResult($row);
+			$this->setIndividual($individual);
+			
+			return CollectionDTO::copy($this, $this->getGraphic());
 		}
-	
 	}
 	
 	public function add() {
@@ -328,7 +409,7 @@ Class Collection_model extends Abstract_model {
 			$collection->parseQueryResult($row);
 			$collection->setIndividual($individual);
 			
-			$collectionList[] = CollectionDTO::copy($collection);
+			$collectionList[] = CollectionDTO::copy($collection, null);
 		}
 		
 		$this->db->select("COUNT(*) as total_rows");

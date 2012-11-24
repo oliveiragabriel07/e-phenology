@@ -25,11 +25,15 @@ class Collection extends REST_Controller {
 		$collection->setRipe($this->post('ripe'));
 		$collection->setUnripe($this->post('unripe'));
 		$collection->setBudding($this->post('budding'));
+		$collection->setFall($this->put('fall'));
 		$this->response($collection->add());
 	}
 	
 	function index_get() {
-		$this->response($this->collection->get($this->get('id')));
+		$collection = new Collection_model();
+		$collection->setId($this->get('id'));
+		$this->response($collection->get());
+		$this->response(array("id" => $this->get('id')));
 	}
 	
 	function index_put() {
