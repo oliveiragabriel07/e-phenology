@@ -131,11 +131,11 @@
 		<div class="container-fluid">
 			<div class="row-fluid">
 				<!--Sidebar -->
-				<div class="span3 side-menu">
+				<div class="span2 side-menu">
 				</div>
 				
 				<!-- Main Content -->
-			    <div class="span9 main-content">
+			    <div class="span10 main-content">
 				</div>
 			
 			</div>

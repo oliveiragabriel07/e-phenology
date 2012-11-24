@@ -7,10 +7,16 @@ Class Individual_model extends Abstract_model {
 	
 	public static $map = array(
 		"id" => "id_individual",
-		"species" => "id_species"
+		"species" => "id_species",
+		"place" => "id_place",
+		"transect" => "transect"			
 	);
 	
 	private $species;
+	
+	private $place;
+	
+	private $transect;
 	
 	public static function getColumn($field) {
 		return Individual_model::$map[$field];
@@ -29,6 +35,34 @@ Class Individual_model extends Abstract_model {
 	}
 	
 	/**
+	 * @return the place
+	 */
+	public function getPlace() {
+		return $this->place;
+	}
+	
+	/**
+	 * @param field_type place
+	 */
+	public function setPlace($place) {
+		$this->place = $place;
+	}
+	
+	/**
+	 * @return the transect
+	 */
+	public function getTransect() {
+		return $this->transect;
+	}
+	
+	/**
+	 * @param field_type transect
+	 */
+	public function setTransect($transect) {
+		$this->transect = $transect;
+	}	
+	
+	/**
 	 * (non-PHPdoc)
 	 * @see Abstract_model::getObjectAsArray()
 	 */
@@ -42,6 +76,7 @@ Class Individual_model extends Abstract_model {
 	 */
 	protected function parseQueryResult($result) {
 		$this->setId($result->{Individual_model::getColumn("id")});
+		$this->setTransect($result->{Individual_model::getColumn("transect")});
 		return $this;
 	}
 	

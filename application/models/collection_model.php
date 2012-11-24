@@ -4,6 +4,7 @@ require_once 'application/models/family_model.php';
 require_once 'application/models/genus_model.php';
 require_once 'application/models/species_model.php';
 require_once 'application/models/individual_model.php';
+require_once 'application/models/place_model.php';
 require_once 'application/dtos/CollectionDTO.php';
 require_once 'application/dtos/GraphicDTO.php';
 
@@ -196,8 +197,8 @@ Class Collection_model extends Abstract_model {
 	 */
 	public function setFall($fall) {
 		$this->fall = $fall;
-	}	
-
+	}
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see Abstract_model::parseQueryResult()
@@ -302,6 +303,9 @@ Class Collection_model extends Abstract_model {
 		$this->db->select(Collection_model::getMap("budding"));
 		$this->db->select(Collection_model::getMap("fall"));
 		$this->db->select(Individual_model::getMap("id"));
+		$this->db->select(Individual_model::getMap("transect"));
+		$this->db->select(Place_model::getMap("id"));
+		$this->db->select(Place_model::getMap("name"));
 		$this->db->select(Species_model::getMap("id"));
 		$this->db->select(Species_model::getMap("scientificName"));
 		$this->db->select(Genus_model::getMap("id"));
@@ -310,6 +314,7 @@ Class Collection_model extends Abstract_model {
 		$this->db->select(Family_model::getMap("name"));
 		$this->db->from(Collection_model::$tableName);
 		$this->db->join(Individual_model::$tableName, Collection_model::getMap("individual") . " = " . Individual_model::getMap("id"));
+		$this->db->join(Place_model::$tableName, Individual_model::getMap("place") . " = " . Place_model::getMap("id"));
 		$this->db->join(Species_model::$tableName, Individual_model::getMap("species") . " = " . Species_model::getMap("id"));
 		$this->db->join(Genus_model::$tableName, Species_model::getMap("genus") . " = " . Genus_model::getMap("id"));
 		$this->db->join(Family_model::$tableName, Genus_model::getMap("family") . " = " . Family_model::getMap("id"));
@@ -322,16 +327,20 @@ Class Collection_model extends Abstract_model {
 			$family->parseQueryResult($row);
 				
 			$genus = new Genus_model();
-			$genus ->parseQueryResult($row);
+			$genus->parseQueryResult($row);
 			$genus->setFamily($family);
 				
 			$species = new Species_model();
 			$species->parseQueryResult($row);
 			$species->setGenus($genus);
-				
+			
+			$place = new Place_model();
+			$place->parseQueryResult($row);
+			
 			$individual = new Individual_model();
 			$individual ->parseQueryResult($row);
 			$individual->setSpecies($species);
+			$individual->setPlace($place);
 				
 			$this->parseQueryResult($row);
 			$this->setIndividual($individual);
@@ -371,6 +380,9 @@ Class Collection_model extends Abstract_model {
 		$this->db->select(Collection_model::getMap("budding"));
 		$this->db->select(Collection_model::getMap("fall"));
 		$this->db->select(Individual_model::getMap("id"));
+		$this->db->select(Individual_model::getMap("transect"));
+		$this->db->select(Place_model::getMap("id"));
+		$this->db->select(Place_model::getMap("name"));
 		$this->db->select(Species_model::getMap("id"));
 		$this->db->select(Species_model::getMap("scientificName"));
 		$this->db->select(Genus_model::getMap("id"));
@@ -379,10 +391,11 @@ Class Collection_model extends Abstract_model {
 		$this->db->select(Family_model::getMap("name"));
 		$this->db->from(Collection_model::$tableName);
 		$this->db->join(Individual_model::$tableName, Collection_model::getMap("individual") . " = " . Individual_model::getMap("id"));
+		$this->db->join(Place_model::$tableName, Individual_model::getMap("place") . " = " . Place_model::getMap("id"));
 		$this->db->join(Species_model::$tableName, Individual_model::getMap("species") . " = " . Species_model::getMap("id"));
 		$this->db->join(Genus_model::$tableName, Species_model::getMap("genus") . " = " . Genus_model::getMap("id"));
 		$this->db->join(Family_model::$tableName, Genus_model::getMap("family") . " = " . Family_model::getMap("id"));
-		$this->db->order_by(Collection_model::getMap($sort), $dir);
+		$this->db->order_by($sort, $dir);
 		$this->db->limit($limit, $start);
 		$this->db->stop_cache();
 		
@@ -401,9 +414,13 @@ Class Collection_model extends Abstract_model {
 			$species->parseQueryResult($row);
 			$species->setGenus($genus);
 			
+			$place = new Place_model();
+			$place->parseQueryResult($row);
+			
 			$individual = new Individual_model();
 			$individual ->parseQueryResult($row);
 			$individual->setSpecies($species);
+			$individual->setPlace($place);
 			
 			$collection = new Collection_model();
 			$collection->parseQueryResult($row);

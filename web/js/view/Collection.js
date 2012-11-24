@@ -303,14 +303,15 @@ EP.view.Collection.Table = GridView.extend({
     initialize: function() {
 		this.editing = null;
 		this.columns = [
-			{ index: 'date', title: 'Data', width: '13%', renderer: this.dateRenderer },
+			{ index: 'date', title: 'Data', width: '10%', renderer: this.dateRenderer },
+			{ index: 'place', title: 'Local (transecto)', width: '15%', renderer: this.placeRenderer },
             { index: 'individual', title: 'Individuo', width: '25%', renderer: this.individualRenderer },
-            { index: 'flowerBud', title: 'Botão', width: '10%' },
-            { index: 'anthesis', title: 'Antese', width: '10%' },
-            { index: 'ripe', title: 'Imaturo', width: '10%' },
-            { index: 'unripe', title: 'Maduro', width: '10%' },
-            { index: 'budding', title: 'Brotamento', width: '12%' },
-            { index: 'fall', title: 'Queda', width: '10%' }
+            { index: 'flowerBud', title: 'Botão', width: '8%' },
+            { index: 'anthesis', title: 'Antese', width: '8%' },
+            { index: 'ripe', title: 'Imaturo', width: '8%' },
+            { index: 'unripe', title: 'Maduro', width: '8%' },
+            { index: 'budding', title: 'Brotamento', width: '10%' },
+            { index: 'fall', title: 'Queda', width: '8%' }
         ];
         this.hover = true;
         this.rowTip = 'Clique para editar';
@@ -364,6 +365,10 @@ EP.view.Collection.Table = GridView.extend({
 	
     dateRenderer: function(v) {
         return v.toString('dd/MM/yyyy');
+    },
+    
+    placeRenderer: function(v, m) {
+        return v + ' (' + m.get('transect') + ')';
     }
 });
 
@@ -457,7 +462,7 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
             '<div class="form-section2">',
                 '<span class="color" />',
                 '<p class="title">Evolução</p>',
-                '<p class="subtitle">Fenofases</p>',
+                '<p class="subtitle">Dados por indivíduo</p>',
             '</div>',
             '<div class="phenophase-chart"></div>',
 		'</div>'

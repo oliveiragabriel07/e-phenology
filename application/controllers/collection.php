@@ -10,6 +10,8 @@ class Collection extends REST_Controller {
 
 		$this->load->model('User_model', 'user');
 		$this->load->model('Collection_model', 'collection');
+		$this->load->model('Individual_model', 'individual');
+		$this->load->model('Place_model', 'place');
 		if(!$this->user->isLogged()) {
 			redirect('login');
 		}
@@ -55,6 +57,14 @@ class Collection extends REST_Controller {
 		$start = $this->input->get('start');
 		$sort = $this->input->get('sortField');
 		$dir = $this->input->get('sortDir');
+		
+		if ($sort == 'place') {
+			$sort = Place_model::getMap('id');
+		} else if ($sort == 'individual') {
+			$sort = Individual_model::getMap('id');
+		} else {
+			$sort = Collection_model::getMap($sort);
+		}
 		
 		$collectionData = $this->collection->search($limit, $start, $sort, $dir);
 		$this->response($collectionData);

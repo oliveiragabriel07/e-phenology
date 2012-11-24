@@ -14,6 +14,8 @@ Class CollectionDTO {
 	public $genus;
 	public $family;
 	public $individual;
+	public $place;
+	public $transect;	
 	public $graphic;
 	
 	public static function copy(Collection_model $collection, $graphic) {
@@ -32,6 +34,8 @@ Class CollectionDTO {
 		$dto->setSpecies($collection->getIndividual()->getSpecies()->getScientificName());
 		$dto->setGenus($collection->getIndividual()->getSpecies()->getGenus()->getName());
 		$dto->setFamily($collection->getIndividual()->getSpecies()->getGenus()->getFamily()->getName());
+		$dto->setTransect($collection->getIndividual()->getTransect());
+		$dto->setPlace($collection->getIndividual()->getPlace()->getName());
 		
 		if ($graphic != null) {
 			$dto->setGraphic($graphic);
@@ -159,6 +163,22 @@ Class CollectionDTO {
 	public function setGraphic($graphic) {
 		$this->graphic = $graphic;
 	}
+	
+	public function getPlace() {
+		return $this->place;
+	}
+	
+	public function setPlace($place) {
+		$this->place = $place;
+	}
+	
+	public function getTransect() {
+		return $this->transect;
+	}
+	
+	public function setTransect($transect) {
+		$this->transect = $transect;
+	}	
 }
 
 ?>
