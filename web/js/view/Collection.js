@@ -26,13 +26,15 @@ EP.view.Collection = EP.view.AbstractPage.extend({
         });
         
         this.collection.getPaginated();
-        this.table = new EP.view.Collection.Table({collection: this.collection});	    
+        this.table = new EP.view.Collection.Table({collection: this.collection});	
+        this.filters = new EP.view.Collection.Filters({collection: this.collection});
 	},
 	
     render: function() {
         EP.view.AbstractPage.prototype.render.apply(this, arguments);
         
         this.$body.empty();
+        this.$body.append(this.filters.render().$el);
         this.$body.append(this.barTpl);
         this.$body.append(this.table.render().$el);
         $('*[rel="tooltip"]', this.$el).tooltip();
@@ -89,6 +91,426 @@ EP.view.Collection = EP.view.AbstractPage.extend({
 	    this.collection.getPaginated();
 	    $.fancybox.close();
 	}
+});
+
+EP.view.Collection.Filters = Backbone.View.extend({
+    className: 'row filters',
+    
+    tagName: 'div',
+    
+    initialize: function() {
+        var FilterModel = Backbone.Model.extend({
+            defaults: {
+                selected: false,
+                type: 'select'
+            }
+        });
+        
+        var FilterCollection = Backbone.Collection.extend({
+            model: FilterModel
+        });
+        
+        
+        var PeriodFilter = EP.view.Collection.BasicFilterItem.extend({
+            onModalClick: function() {
+                $.fancybox({
+                    content: form.render().$el,
+                    autoSize: false,
+                    height: 'auto',
+                    width: '500',
+                    tpl: {
+                        wrap: [
+                          '<div class="fancybox-wrap span7" tabIndex="-1">',
+                              '<form>',
+                                  '<div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div></div></div>',
+                              '</form>',
+                          '</div>'
+                      ].join('')
+                    },
+                    beforeShow: function() {
+                        this.title = form.buttonsTpl;
+                    },
+                    afterShow: function() {
+                        $('#save', this.wrap).on('click', form.onBtnSaveClick);
+                        $('#cancel', this.wrap).on('click', form.onBtnCancelClick);
+                    },
+                    beforeClose: function() {
+                        form.off();
+                        $('#save', this.wrap).off();
+                        $('#cancel', this.wrap).off();
+                    },
+                    helpers : {
+                        title : {
+                            type: 'inside'
+                        }
+                    }
+                });
+            }
+        });                
+        
+        var placeCollection = new FilterCollection([{
+            value: 'ANY',
+            label: 'Qualquer local',
+            selected: true
+        },{
+            value: 'EAST_BORDER',
+            label: 'Borda Leste'
+        },{
+            value: 'SOUTH_BORDER',
+            label: 'Borda Sul'
+        }]);
+        placeCollection.name = 'place';
+        
+        var transectCollection = new FilterCollection([{
+            value: 'ANY',
+            label: 'Todos os transectos',
+            selected: true
+        },{
+            type: 'divider'
+        },{
+            value: 'TYPE#',
+            label: 'Inserir transecto',
+            text: 'Transecto: {0}',
+            type: 'text'
+        }]);
+        transectCollection.name = 'transect';
+        
+        var individualCollection = new FilterCollection([{
+            value: 'ANY',
+            label: 'Todos os indivíduos',
+            selected: true
+        },{
+            type: 'divider'
+        },{
+            value: 'TYPE#',
+            label: 'Inserir Indivíduo',
+            text: 'Indivíduo: {0}',
+            type: 'text'
+        }]);
+        individualCollection.name = 'individual';
+        
+        var periodCollection = new FilterCollection([{
+            value: 'ANY',
+            label: 'Qualquer data',
+            selected: true
+        },{
+            value: 'LAST_MONTH',
+            label: 'Último mês'
+        },{
+            value: 'LAST_TRHEE_MONTHS',
+            label: 'Últimos 3 meses'
+        },{
+            value: 'LAST_YEAR',
+            label: 'Último ano'
+        },{
+            type: 'divider'
+        },{
+            value: 'PERIOD#',
+            label: 'Intervalo customizado',
+            type: 'modal'
+        }]);
+        
+        periodCollection.name = 'period';
+        
+        this.filters = {};
+        this.filters.place = new EP.view.Collection.BasicFilterItem({
+            collection: placeCollection
+        });
+        
+        this.filters.transect = new EP.view.Collection.BasicFilterItem({
+            collection: transectCollection
+        });
+        
+        this.filters.individual = new EP.view.Collection.BasicFilterItem({
+            collection: individualCollection
+        });
+        
+        this.filters.period = new PeriodFilter({
+            collection: periodCollection
+        });
+        
+        var self = this;
+        _.each(this.filters, function(f) {
+            f.collection.on('change', self.onFiltersChange, self);
+        });
+    },
+    
+    render: function() {
+        var markup = $('<ul class="nav nav-pills pull-left">');
+        
+        _.each(this.filters, function(f) {
+            markup.append(f.render().$el);
+        });
+        
+        this.$el.html(markup);
+        return this;
+    },
+    
+// listeners
+    onFiltersChange: function(model) {
+        if(!model.get('selected')) {
+            return;
+        }
+        
+        var meta = this.collection.meta,
+            filters = meta.get('filters');
+        
+        filters[model.collection.name] = model.get('value').replace(/.*\#/, '');
+        meta.set('filters', filters);
+        meta.set('start', 0);
+        this.collection.getPaginated();
+    }
+        
+    
+});
+
+EP.view.Collection.BasicFilterItem = Backbone.View.extend({
+    template: [
+        '<a class="dropdown-toggle text" data-toggle="dropdown" href="#"></a>',
+        '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu"></ul>'
+    ].join(''),
+    
+    textTpl: _.template('<%= text %> <b class="caret"></b>'),
+    
+    selectTpl: _.template([
+        '<li class="<%= selected ? "selected" : ""%>">',
+            '<a tabindex="-1" href="#" data-action="filter" data-value="<%= value %>" data-type="<%= type %>"><%= label %></a>',
+        '</li>'
+    ].join('')),
+    
+    // foda-se
+    periodWindowTpl: _.template([
+        '<div class="control-group span3">',
+            '<div class="controls control-composite controls-row">',
+                '<label>Início</label>',
+                '<div class="span1" style="margin-right: 5px;">',
+                    '<span class="hint">Dia</span>',
+                    '<select id="day" name="day" class="input-block-level">',
+                        '<% _.each(days, function(d) { %>',
+                            '<option value="<%= d %>" ><%= d.toString() %></option>',
+                        '<% })%>',                
+                    '</select>',
+                '</div>',
+                '<div class="span1" style="margin-right: 5px;">',
+                    '<span class="hint">Mês</span>',
+                    '<select id="month" name="month" class="input-block-level">',
+                        '<% _.each(months, function(m) { %>',
+                            '<option value="<%= m %>" %> ><%= m.toString() %></option>',
+                        '<% })%>',
+                    '</select>',
+                '</div>',
+                '<div class="span1">',
+                    '<span class="hint">Ano</span>',                
+                    '<select id="year" name="year" class="input-block-level">',
+                        '<% _.each(years, function(y) { %>',
+                            '<option value="<%= y %>" ><%= y.toString() %></option>',
+                        '<% })%>',
+                    '</select>',
+                '</div>',
+            '</div>',
+            
+            '<div class="controls control-composite controls-row">',
+                '<label>Fim</label>',
+                '<div class="span1" style="margin-right: 5px;">',
+                    '<span class="hint">Dia</span>',
+                    '<select id="day" name="day" class="input-block-level">',
+                        '<% _.each(days, function(d) { %>',
+                            '<option value="<%= d %>" <%= (d === today.getDate()) ? "selected" : "" %> ><%= d.toString() %></option>',
+                        '<% })%>',                
+                    '</select>',
+                '</div>',
+                '<div class="span1" style="margin-right: 5px;">',
+                    '<span class="hint">Mês</span>',
+                    '<select id="month" name="month" class="input-block-level">',
+                        '<% _.each(months, function(m) { %>',
+                            '<option value="<%= m %>" <%= (m === today.getMonth() + 1) ? "selected" : "" %> ><%= m.toString() %></option>',
+                        '<% })%>',
+                    '</select>',
+                '</div>',
+                '<div class="span1">',
+                    '<span class="hint">Ano</span>',                
+                    '<select id="year" name="year" class="input-block-level">',
+                        '<% _.each(years, function(y) { %>',
+                            '<option value="<%= y %>" <%= (y === today.getFullYear()) ? "selected" : "" %> ><%= y.toString() %></option>',
+                        '<% })%>',
+                    '</select>',
+                '</div>',
+            '</div>',            
+        '</div>'
+    ].join('')),
+    
+    formTpl: _.template([
+        '<li class="<%= selected ? "selected" : ""%>">',
+            '<form style="padding: 3px 20px; margin:0">',
+                '<div class="input-append">',
+                    '<input type="text" placeholder="<%= label %>"name="<%= name %>" id="<%= name %>" class="input-medium" />',
+                    '<button class="btn" data-action="filter" type="submit" data-value="<%= value %>" data-type="<%= type %>">Ir</button>',
+                '</div>',
+            '</form>',
+        '</li>'       
+    ].join('')),
+                
+    tagName: 'li',
+    
+    className: 'dropdown',
+    
+    events: {
+        'click *[data-action="filter"]': 'onFilterClick'
+    },
+    
+    initialize: function(cfg) {
+        this.name = this.collection.name;
+        this.selected = this.collection.find(function(model) {
+            return model.get('selected');
+        });
+    },
+    
+    render: function() {
+        var selected, self = this;
+        
+        this.$el.html(this.template);
+        
+        this.$el.addClass('filter-' + this.name);
+        this.$text = this.$('a.text');
+        this.$menu = this.$('ul.dropdown-menu');
+        
+        this.updateText();
+        
+        this.collection.each(function(model) {
+            var type = model.get('type'),
+                el;
+            
+            if (type === 'divider') {
+                el = $('<li class="divider"></li>');
+                self.$menu.append(el);
+            } else if (type === 'select' || type === 'modal') {
+                el = $(self.selectTpl(model.toJSON()));
+                self.$menu.append(el);
+            } else if (type === 'text') {
+                el = $(self.formTpl(_.extend({}, {name: self.name}, model.toJSON())));
+                self.$menu.append(el);
+            }
+            
+            self.onItemRender(el, model);
+        });
+        
+        return this;
+    },
+    
+    updateText: function() {
+        this.$text.html(this.textTpl({text: this.buildText()}));
+    },
+    
+    refresh: function(el) {
+        this.$('li').removeClass('selected');
+        el.closest('li').addClass('selected');
+        this.updateText();       
+    },
+    
+// listeners
+    onFilterClick: function(e) {
+        e.preventDefault();
+        
+        var el = $(e.target),
+            value = el.attr('data-value'),
+            type = el.attr('data-type'),
+            method = 'on' + type.charAt(0).toUpperCase() + type.slice(1) + 'Click',
+            model;
+        
+        model = this.collection.find(function(m) {
+            return m.get('value') && m.get('value').replace(/\#.*/, '') === value.replace(/\#.*/, '');
+        });
+        
+        this[method](model, el);
+    },
+    
+    onItemRender: function() {},
+    
+    onTextClick: function(model, el) {
+        var form = el.closest('form'),
+            menu = el.closest('.dropdown'),
+            field = form.find('input[name="' + model.collection.name + '"]'),
+            value = field.val();
+        
+        if (!model.changedAttributes({value: value})) {
+            return;
+        }
+        
+        menu.removeClass('open');
+        model.set({
+           value: 'TYPE#' + value,
+           selected: true 
+        });
+        this.selected.set('selected', false);
+        this.selected = model;
+        
+        this.refresh(el);
+    },
+    
+    onModalClick: function() {
+        $.fancybox({
+            content: form.render().$el,
+            autoSize: false,
+            height: 'auto',
+            width: '400',
+            tpl: {
+                wrap: [
+                  '<div class="fancybox-wrap span7" tabIndex="-1">',
+                      '<form>',
+                          '<div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div></div></div>',
+                      '</form>',
+                  '</div>'
+              ].join('')
+            },
+            beforeShow: function() {
+                this.title = form.buttonsTpl;
+            },
+            afterShow: function() {
+                $('#save', this.wrap).on('click', form.onBtnSaveClick);
+            },
+            beforeClose: function() {
+                form.off();
+                $('#save', this.wrap).off();
+            },
+            helpers : {
+                title : {
+                    type: 'inside'
+                }
+            }
+        });
+    },
+    
+    onSelectClick: function(model, el) {
+        if (model === this.selected) {
+            return;
+        }
+        
+        this.selected.set('selected', false);
+        model.set('selected', true);
+        this.selected = model;
+        
+        this.refresh(el);
+    },
+    
+// other methods
+    
+    getItemValue: function() {
+        
+    },
+    
+    buildText: function() {
+        var type = this.selected.get('type'),
+            m = this.selected,
+            text;
+        
+        if (type === 'select') {
+            text = m.get('label');
+        } else if (this.selected.get('type') === 'text') {
+            text = $.format(m.get('text'), m.get('value').replace(/.*#/, ''));
+        }
+        return text;
+    }
+    
 });
 
 EP.view.Collection.FormNew = Backbone.View.extend({
@@ -193,7 +615,6 @@ EP.view.Collection.FormNew = Backbone.View.extend({
     buttonsTpl: [
        '<div class="form-actions">',
             '<button type="submit" id="save" class="btn btn-primary" style="margin-right: 8px;">Salvar</button>',
-            '<button type="button" id="cancel" class="btn">Cancelar</button>',
         '</div>'
     ].join(''),
     
@@ -651,6 +1072,12 @@ EP.model.MetaData = Backbone.Model.extend({
         total: 0,
         sortField: '',
         sortDir: '',
+        filters: {
+            place: 'ANY',
+            transect: 'ANY',
+            individual: 'ANY',
+            date: 'ANY'
+        },
         pageSizeOptions: [10, 25, 50, 100]
     }
 });

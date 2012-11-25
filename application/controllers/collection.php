@@ -57,6 +57,7 @@ class Collection extends REST_Controller {
 		$start = $this->input->get('start');
 		$sort = $this->input->get('sortField');
 		$dir = $this->input->get('sortDir');
+		$filters = $this->input->get('filters');
 		
 		if ($sort == 'place') {
 			$sort = Place_model::getMap('id');
