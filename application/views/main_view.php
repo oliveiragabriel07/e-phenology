@@ -29,6 +29,8 @@
 	<!--  application  -->
 	<script type="text/javascript" src="../web/js/app.js"></script>
 	<script type="text/javascript" src="../web/js/model/UserModel.js"></script>
+	<script type="text/javascript" src="../web/js/model/MetaDataModel.js"></script>
+	<script type="text/javascript" src="../web/js/collection/PaginatedCollection.js"></script>
 	<script type="text/javascript" src="../web/js/view/Grid.js"></script>
 	<script type="text/javascript" src="../web/js/view/Login.js"></script>
 	<script type="text/javascript" src="../web/js/view/Header.js"></script>

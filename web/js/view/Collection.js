@@ -71,12 +71,10 @@ EP.view.Collection = EP.view.AbstractPage.extend({
 		    },
             afterShow: function() {
                 $('#save', this.wrap).on('click', form.onBtnSaveClick);
-                $('#cancel', this.wrap).on('click', form.onBtnCancelClick);
             },
             beforeClose: function() {
                 form.off();
                 $('#save', this.wrap).off();
-                $('#cancel', this.wrap).off();
             },
             helpers : {
                 title : {
@@ -103,50 +101,32 @@ EP.view.Collection.Filters = Backbone.View.extend({
             defaults: {
                 selected: false,
                 type: 'select'
+            },
+            
+            renderValue: function() {
+				var type = this.get('type'),
+					text;
+
+				if (type === 'select') {
+		            text = this.get('label');
+		        } else if (type === 'text') {
+		            text = $.format(this.get('text'), this.get('value').replace(/.*#/, ''));
+		        } else if (type === 'period') {
+					var period = this.get('value').replace(/.*\#/, '').split(';');
+				
+					period[0] = Date.parseExact(period[0], 'yyyy-M-d');
+					period[1] = Date.parseExact(period[1], 'yyyy-M-d');
+					
+					text =  period[0].toString('dd/MM/yyyy') + ' - ' + period[1].toString('dd/MM/yyyy');
+				}
+           
+				return text;
             }
         });
         
         var FilterCollection = Backbone.Collection.extend({
             model: FilterModel
         });
-        
-        
-        var PeriodFilter = EP.view.Collection.BasicFilterItem.extend({
-            onModalClick: function() {
-                $.fancybox({
-                    content: form.render().$el,
-                    autoSize: false,
-                    height: 'auto',
-                    width: '500',
-                    tpl: {
-                        wrap: [
-                          '<div class="fancybox-wrap span7" tabIndex="-1">',
-                              '<form>',
-                                  '<div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div></div></div>',
-                              '</form>',
-                          '</div>'
-                      ].join('')
-                    },
-                    beforeShow: function() {
-                        this.title = form.buttonsTpl;
-                    },
-                    afterShow: function() {
-                        $('#save', this.wrap).on('click', form.onBtnSaveClick);
-                        $('#cancel', this.wrap).on('click', form.onBtnCancelClick);
-                    },
-                    beforeClose: function() {
-                        form.off();
-                        $('#save', this.wrap).off();
-                        $('#cancel', this.wrap).off();
-                    },
-                    helpers : {
-                        title : {
-                            type: 'inside'
-                        }
-                    }
-                });
-            }
-        });                
         
         var placeCollection = new FilterCollection([{
             value: 'ANY',
@@ -191,7 +171,7 @@ EP.view.Collection.Filters = Backbone.View.extend({
         
         var periodCollection = new FilterCollection([{
             value: 'ANY',
-            label: 'Qualquer data',
+            label: 'Em qualquer data',
             selected: true
         },{
             value: 'LAST_MONTH',
@@ -206,8 +186,8 @@ EP.view.Collection.Filters = Backbone.View.extend({
             type: 'divider'
         },{
             value: 'PERIOD#',
-            label: 'Intervalo customizado',
-            type: 'modal'
+            label: 'Período',
+            type: 'period'
         }]);
         
         periodCollection.name = 'period';
@@ -225,7 +205,7 @@ EP.view.Collection.Filters = Backbone.View.extend({
             collection: individualCollection
         });
         
-        this.filters.period = new PeriodFilter({
+        this.filters.period = new EP.view.Collection.BasicFilterItem({
             collection: periodCollection
         });
         
@@ -256,6 +236,7 @@ EP.view.Collection.Filters = Backbone.View.extend({
             filters = meta.get('filters');
         
         filters[model.collection.name] = model.get('value').replace(/.*\#/, '');
+        
         meta.set('filters', filters);
         meta.set('start', 0);
         this.collection.getPaginated();
@@ -278,67 +259,6 @@ EP.view.Collection.BasicFilterItem = Backbone.View.extend({
         '</li>'
     ].join('')),
     
-    // foda-se
-    periodWindowTpl: _.template([
-        '<div class="control-group span3">',
-            '<div class="controls control-composite controls-row">',
-                '<label>Início</label>',
-                '<div class="span1" style="margin-right: 5px;">',
-                    '<span class="hint">Dia</span>',
-                    '<select id="day" name="day" class="input-block-level">',
-                        '<% _.each(days, function(d) { %>',
-                            '<option value="<%= d %>" ><%= d.toString() %></option>',
-                        '<% })%>',                
-                    '</select>',
-                '</div>',
-                '<div class="span1" style="margin-right: 5px;">',
-                    '<span class="hint">Mês</span>',
-                    '<select id="month" name="month" class="input-block-level">',
-                        '<% _.each(months, function(m) { %>',
-                            '<option value="<%= m %>" %> ><%= m.toString() %></option>',
-                        '<% })%>',
-                    '</select>',
-                '</div>',
-                '<div class="span1">',
-                    '<span class="hint">Ano</span>',                
-                    '<select id="year" name="year" class="input-block-level">',
-                        '<% _.each(years, function(y) { %>',
-                            '<option value="<%= y %>" ><%= y.toString() %></option>',
-                        '<% })%>',
-                    '</select>',
-                '</div>',
-            '</div>',
-            
-            '<div class="controls control-composite controls-row">',
-                '<label>Fim</label>',
-                '<div class="span1" style="margin-right: 5px;">',
-                    '<span class="hint">Dia</span>',
-                    '<select id="day" name="day" class="input-block-level">',
-                        '<% _.each(days, function(d) { %>',
-                            '<option value="<%= d %>" <%= (d === today.getDate()) ? "selected" : "" %> ><%= d.toString() %></option>',
-                        '<% })%>',                
-                    '</select>',
-                '</div>',
-                '<div class="span1" style="margin-right: 5px;">',
-                    '<span class="hint">Mês</span>',
-                    '<select id="month" name="month" class="input-block-level">',
-                        '<% _.each(months, function(m) { %>',
-                            '<option value="<%= m %>" <%= (m === today.getMonth() + 1) ? "selected" : "" %> ><%= m.toString() %></option>',
-                        '<% })%>',
-                    '</select>',
-                '</div>',
-                '<div class="span1">',
-                    '<span class="hint">Ano</span>',                
-                    '<select id="year" name="year" class="input-block-level">',
-                        '<% _.each(years, function(y) { %>',
-                            '<option value="<%= y %>" <%= (y === today.getFullYear()) ? "selected" : "" %> ><%= y.toString() %></option>',
-                        '<% })%>',
-                    '</select>',
-                '</div>',
-            '</div>',            
-        '</div>'
-    ].join('')),
-    
     formTpl: _.template([
         '<li class="<%= selected ? "selected" : ""%>">',
             '<form style="padding: 3px 20px; margin:0">',
@@ -349,7 +269,7 @@ EP.view.Collection.BasicFilterItem = Backbone.View.extend({
             '</form>',
         '</li>'       
     ].join('')),
-                
+    
     tagName: 'li',
     
     className: 'dropdown',
@@ -383,7 +303,7 @@ EP.view.Collection.BasicFilterItem = Backbone.View.extend({
             if (type === 'divider') {
                 el = $('<li class="divider"></li>');
                 self.$menu.append(el);
-            } else if (type === 'select' || type === 'modal') {
+            } else if (type === 'select' || type === 'period') {
                 el = $(self.selectTpl(model.toJSON()));
                 self.$menu.append(el);
             } else if (type === 'text') {
@@ -398,7 +318,7 @@ EP.view.Collection.BasicFilterItem = Backbone.View.extend({
     },
     
     updateText: function() {
-        this.$text.html(this.textTpl({text: this.buildText()}));
+        this.$text.html(this.textTpl({text: this.selected.renderValue()}));
     },
     
     refresh: function(el) {
@@ -447,15 +367,31 @@ EP.view.Collection.BasicFilterItem = Backbone.View.extend({
         this.refresh(el);
     },
     
-    onModalClick: function() {
+    onPeriodClick: function(model, el) {
+		var win = new EP.view.Collection.PeriodWindow(),
+			self = this;
+			
+		var onGoClick = function onGoClick(value, modal) {
+			$.fancybox.close();
+			model.set({
+	           value: 'PERIOD#' + value.dateBegin + ';' + value.dateEnd,
+	           selected: true
+			});
+	        self.selected.set('selected', false);
+	        self.selected = model;
+	        self.refresh(el);
+		};
+		
+		win.on('go', onGoClick);
+		
         $.fancybox({
-            content: form.render().$el,
+            content: win.render().$el,
             autoSize: false,
             height: 'auto',
             width: '400',
             tpl: {
                 wrap: [
-                  '<div class="fancybox-wrap span7" tabIndex="-1">',
+                  '<div class="fancybox-wrap" tabIndex="-1">',
                       '<form>',
                           '<div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div></div></div>',
                       '</form>',
@@ -463,14 +399,18 @@ EP.view.Collection.BasicFilterItem = Backbone.View.extend({
               ].join('')
             },
             beforeShow: function() {
-                this.title = form.buttonsTpl;
+                this.title = [
+	                '<div class="form-actions">',
+			            '<button type="submit" id="go" class="btn btn-primary" style="margin-right: 8px;">Ir</button>',
+			        '</div>'
+		        ].join('');
             },
             afterShow: function() {
-                $('#save', this.wrap).on('click', form.onBtnSaveClick);
+                $('#go', this.wrap).on('click', $.proxy(win.onBtnGoClick, win));
             },
             beforeClose: function() {
-                form.off();
-                $('#save', this.wrap).off();
+                win.off();
+                $('#go', this.wrap).off();
             },
             helpers : {
                 title : {
@@ -490,27 +430,126 @@ EP.view.Collection.BasicFilterItem = Backbone.View.extend({
         this.selected = model;
         
         this.refresh(el);
+    }
+});
+
+EP.view.Collection.PeriodWindow = Backbone.View.extend({
+	
+	template: _.template([
+		'<h3>Período</h3>',
+        '<div class="control-group">',
+			'<label>Início</label>',
+            '<div class="controls control-composite controls-row">',
+                '<div class="span1" style="margin-right: 5px;">',
+                    '<span class="hint">Dia</span>',
+                    '<select id="dayBegin" name="dayBegin" class="input-block-level">',
+                        '<% _.each(days, function(d) { %>',
+                            '<option value="<%= d %>" ><%= d.toString() %></option>',
+                        '<% })%>',                
+                    '</select>',
+                '</div>',
+                '<div class="span1" style="margin-right: 5px;">',
+                    '<span class="hint">Mês</span>',
+                    '<select id="monthBegin" name="monthBegin" class="input-block-level">',
+                        '<% _.each(months, function(m) { %>',
+                            '<option value="<%= m %>" ><%= m.toString() %></option>',
+                        '<% })%>',
+                    '</select>',
+                '</div>',
+                '<div class="span1">',
+                    '<span class="hint">Ano</span>',                
+                    '<select id="yearBegin" name="yearBegin" class="input-block-level">',
+                        '<% _.each(years, function(y) { %>',
+                            '<option value="<%= y %>" <%= (y === today.getFullYear() - 1) ? "selected" : "" %>><%= y.toString() %></option>',
+                        '<% })%>',
+                    '</select>',
+                '</div>',
+            '</div>',
+		
+		'<div class="control-group">',            
+            '<label>Fim</label>',
+            '<div class="controls control-composite controls-row">',
+                '<div class="span1" style="margin-right: 5px;">',
+                    '<span class="hint">Dia</span>',
+                    '<select id="dayEnd" name="dayEnd" class="input-block-level">',
+                        '<% _.each(days, function(d) { %>',
+                            '<option value="<%= d %>" <%= (d === today.getDate()) ? "selected" : "" %> ><%= d.toString() %></option>',
+                        '<% })%>',                
+                    '</select>',
+                '</div>',
+                '<div class="span1" style="margin-right: 5px;">',
+                    '<span class="hint">Mês</span>',
+                    '<select id="monthEnd" name="monthEnd" class="input-block-level">',
+                        '<% _.each(months, function(m) { %>',
+                            '<option value="<%= m %>" <%= (m === today.getMonth() + 1) ? "selected" : "" %> ><%= m.toString() %></option>',
+                        '<% })%>',
+                    '</select>',
+                '</div>',
+                '<div class="span1">',
+                    '<span class="hint">Ano</span>',                
+                    '<select id="yearEnd" name="yearEnd" class="input-block-level">',
+                        '<% _.each(years, function(y) { %>',
+                            '<option value="<%= y %>" <%= (y === today.getFullYear()) ? "selected" : "" %> ><%= y.toString() %></option>',
+                        '<% })%>',
+                    '</select>',
+                '</div>',
+            '</div>',            
+        '</div>'
+    ].join('')),
+    
+    render: function() {
+		// Backbone.Validation.bind(this);
+        
+        var today = new Date(),
+            data = {}, i;
+        
+        data.today = today;
+        data.years = [];
+        data.months = [];
+        data.days = [];
+            
+        for (i = 0; i < 10; i++) {
+            data.years.push(today.getFullYear() - i);
+        }
+        
+        for (i = 1; i <= 12; i++) {
+            data.months.push(i);
+        }
+        
+        for (i = 1; i <= 31; i++) {
+            data.days.push(i);
+        }
+        
+        this.$el.html(this.template(data));
+        
+        return this;
+    },
+
+// listeners
+    onBtnGoClick: function(e) {
+		e.preventDefault();
+		var values = this.getValues();
+		
+		// TODO validate
+		this.trigger('go', values, this);
     },
     
 // other methods
-    
-    getItemValue: function() {
+    getValues: function() {
+        var form = this.$el.closest('form'),
+            valuesArray = form.serializeArray(),
+            data = {}, values = {};
+            
+        _.each(valuesArray, function(v) {
+            data[v.name] = v.value;
+        });
         
-    },
-    
-    buildText: function() {
-        var type = this.selected.get('type'),
-            m = this.selected,
-            text;
-        
-        if (type === 'select') {
-            text = m.get('label');
-        } else if (this.selected.get('type') === 'text') {
-            text = $.format(m.get('text'), m.get('value').replace(/.*#/, ''));
-        }
-        return text;
+        values.dateBegin = $.format('{0}-{1}-{2}', data.yearBegin, data.monthBegin, data.dayBegin);
+        values.dateEnd = $.format('{0}-{1}-{2}', data.yearEnd, data.monthEnd, data.dayEnd);
+        return values;
     }
     
+	
 });
 
 EP.view.Collection.FormNew = Backbone.View.extend({
@@ -813,7 +852,7 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
                 '<p class="title"><%= individual + " - " + species%></p>',
                 '<p class="subtitle"><%= date.toString("dd/MM/yyyy") %></p>',
             '</div>',
-            	    
+            
             '<div class="span4">',
                 '<div class="image-wrapper">',
                     // '<input type="file" />',
@@ -1065,65 +1104,6 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 	}
 });
 
-EP.model.MetaData = Backbone.Model.extend({
-    defaults: {
-        start: 0,
-        length: 10,
-        total: 0,
-        sortField: '',
-        sortDir: '',
-        filters: {
-            place: 'ANY',
-            transect: 'ANY',
-            individual: 'ANY',
-            date: 'ANY'
-        },
-        pageSizeOptions: [10, 25, 50, 100]
-    }
-});
-
-var PaginatedCollection = Backbone.Collection.extend({
-    parse: function(response) {
-        this.meta.set('total', response.totalRows);
-        return response.data;
-    },
-    
-    initialize: function(models, options) {
-		metaData = options.metaData || {};
-        this.meta = new EP.model.MetaData(metaData);
-    },
-    
-    getPaginated: function(options) {
-        options = options ? _.clone(options) : {};
-        options.parse = true;
-
-        var collection = this;
-        var success = options.success;
-        options.success = function(resp, status, xhr) {
-            collection.reset(collection.parse(resp, xhr), options);
-            collection.total = collection.size();
-            if (success) {
-                success(collection, resp);                
-            }
-        };
-        options.error = Backbone.wrapError(options.error, collection, options);
-        
-        if (!this.trigger('beforeload', this, options)) {
-            return;
-        }
-        
-        // Default JSON-request options.
-        var params = {
-            url: this.url,
-            type: 'GET',
-            dataType: 'json',
-            data: this.meta.toJSON()
-        };
-        
-        return $.ajax(_.extend(params, options));
-    }
-});
-
 EP.model.Collection = Backbone.Model.extend({
 	url: '../collection',
 	
@@ -1208,4 +1188,3 @@ EP.collection.Collection = PaginatedCollection.extend({
 	url: '../collection/search',
     model: EP.model.Collection
 });
-
