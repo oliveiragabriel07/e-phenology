@@ -208,3 +208,85 @@ p.form-section {
 	margin: 0;
 }
 
+#toast {
+	background-color: #000000;
+	border: 2px solid #CCCCCC;
+	position: fixed;
+	color: white;
+	padding: 10px 50px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	opacity: 0.8;
+	top: 50px;
+	left: 50%;
+}
+
+#toast div.toast-loading {
+	display: inline-block;
+	height: 30px;
+	width: 30px;
+	margin: 0 20px 0 -30px;
+	vertical-align: middle;
+	background: url('../img/toast-loading.gif') no-repeat scroll center;
+	
+}
+
+#toast p.toast-message {
+	margin: 0;
+	line-height: 30px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.chart-section {
+	padding: 10px;
+	border-bottom: 1px solid #EEEEEE;
+}
+
+.chart-section .title {
+	color: #923496;
+	font-weight: bold;
+	font-size: 14px;
+	text-transform: uppercase;
+	margin-bottom: 5px;
+}
+
+.chart-section .subtitle {
+	color: #999999;
+	margin-bottom: 0;
+}
+
+.chart-wrapper {
+	border: 1px solid #EEEEEE;
+	width: 400px;
+	float: left;
+	margin: 0 30px 20px 0;
+}
+
+.chart-wrapper img.chart {
+	width: 400px;
+	height: 180px;
+}
+
+.phenophase-chart {
+	background: url('../img/phenophase_chart.jpg') no-repeat scroll center;	
+}
+
+.climate-chart {
+	background: url('../img/climate_chart.jpg') no-repeat scroll center;	
+}
+
+a:hover .phenophase-chart {
+	background-image: url('../img/phenophase_chart_active.jpg');
+}
+
+a:hover .climate-chart {
+	background-image: url('../img/climate_chart_active.jpg');
+}
+
+.crumb-small {
+	font-size: 12px;
+	line-height: 30px;
+	vertical-align: middle;
+}

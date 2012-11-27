@@ -22,7 +22,7 @@ EP.view.NavigationMenu = Backbone.View.extend({
             {icon: 'icon-home', href:'#', text: 'Inicio', tag: 'home', active: false},
             {icon: 'icon-list-alt', href:'#collection', text: 'Dados de coletas', tag: 'data', active: false},
             {icon: 'icon-leaf', href:'#individual', text: 'Individuos', tag: 'individual', active: false},
-            {icon: 'icon-align-right', href:'#chart', text: 'Graficos', tag: 'chart', active: false},
+            {icon: 'icon-align-right', href:'#graphics', text: 'Graficos', tag: 'graphics', active: false},
             {icon: 'icon-user', href:'#user', text: 'Usuarios', tag: 'user', active: false},
             {icon: 'icon-calendar', href:'#agenda', text: 'Agenda', tag: 'agenda', active: false}
         ]);

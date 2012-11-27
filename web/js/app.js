@@ -82,7 +82,9 @@ EP.AppRouter = Backbone.Router.extend({
         'collection' : 'collectionList',
         'individual' : 'individualList',
         'individual/:id' : 'individualDetails',
-        'chart' : 'showCharts',
+        'graphics' : 'showGraphics',
+        'graphics/climate' : 'showClimateGraphic',
+        'graphics/phenophase': 'showPhenophaseGraphic',
         'user' : 'userList',
         'user/:id': 'userDetails',
         'agenda' : 'showAgenda'
@@ -132,11 +134,23 @@ EP.AppRouter = Backbone.Router.extend({
         this.navMenu.setActiveItem('individual');
     },  
     
-    showCharts: function() {
-        this.navMenu.setActiveItem('chart');
+    showGraphics: function() {
+        this.navMenu.setActiveItem('graphics');
         
-        var chartView = new EP.view.Chart();
-        this.mainEl.html(chartView.render().$el);
+        var graphicView = new EP.view.Graphics();
+        this.mainEl.html(graphicView.render().$el);
+    },
+    
+    showClimateGraphic: function() {
+        this.navMenu.setActiveItem('graphics');
+        
+        this.mainEl.html(new EP.view.ClimateGraphic().render().$el);
+    },
+    
+    showPhenophaseGraphic: function() {
+        this.navMenu.setActiveItem('graphics');
+        
+        this.mainEl.html(new EP.view.PhenophaseGraphic().render().$el);
     },
     
     userList: function() {

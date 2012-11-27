@@ -36,6 +36,12 @@ var PaginatedCollection = Backbone.Collection.extend({
             data: this.meta.toJSON()
         };
         
+        var toast = new Toast({
+            msg: 'Carregando...',
+            showLoading: true
+        });
+        
+        options.complete = toast.close;
         return $.ajax(_.extend(params, options));
     }
 });

@@ -30,7 +30,7 @@ class Collection extends REST_Controller {
 		$collection->setRipe($this->post('ripe'));
 		$collection->setUnripe($this->post('unripe'));
 		$collection->setBudding($this->post('budding'));
-		$collection->setFall($this->put('fall'));
+		$collection->setFall($this->post('fall'));
 		$this->response($collection->add());
 	}
 	
@@ -50,6 +50,7 @@ class Collection extends REST_Controller {
 		$collection->setRipe($this->put('ripe'));
 		$collection->setUnripe($this->put('unripe'));
 		$collection->setBudding($this->put('budding'));
+		$collection->setFall($this->put('fall'));
 		$this->response($collection->update());
 	}	
 

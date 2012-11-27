@@ -26,6 +26,7 @@ EP.view.Collection = EP.view.AbstractPage.extend({
         });
         
         this.collection.getPaginated();
+        
         this.table = new EP.view.Collection.Table({collection: this.collection});	
         this.filters = new EP.view.Collection.Filters({collection: this.collection});
 	},
@@ -85,9 +86,10 @@ EP.view.Collection = EP.view.AbstractPage.extend({
 	},
 	
 	onAddModel: function(m) {
-	    this.collection.meta.set('start', 0);
-	    this.collection.getPaginated();
 	    $.fancybox.close();
+	    
+        this.collection.meta.set('start', 0);
+        this.collection.getPaginated();
 	}
 });
 
@@ -245,6 +247,8 @@ EP.view.Collection.Filters = Backbone.View.extend({
 		
         meta.set('filters', filters);
         meta.set('start', 0);
+        
+        
         this.collection.getPaginated();
    },
     
@@ -726,22 +730,33 @@ EP.view.Collection.FormNew = Backbone.View.extend({
         var self = this,
             values = this.getValues();
             
-        var options = {
-            wait: true,
-            success: function(model, response) {
-                self.trigger('add', this.model, this);
-            }
-        };
-        
         // checks for changes
         if (!this.model.changedAttributes(values)) {
             return;
         }
         
-        // validates and saves model
-        if (!this.model.save(values, options)){
+        // validates
+        if (!this.model.set(values)) {
             return;
         }
+        
+        new Toast({
+            msg: 'Enviando ...',
+            showLoading: true
+        });
+        
+        this.model.save(undefined, {
+            wait: true,
+            success: function(model, response) {
+                new Toast({
+                    msg: 'Registro salvo com sucesso!',
+                    closable: true,
+                    timeout: 8 * 1000
+                });
+                
+                self.trigger('add', this.model, this);
+            }
+        });
     },
     
     onBtnCancelClick: function(e) {
@@ -817,9 +832,16 @@ EP.view.Collection.Table = GridView.extend({
 			this.editing.close(true);
 		}
 		
+		var toast = new Toast({
+		    msg: 'Carregando ...',
+		    showLoading: true
+		});
+		
 		model.fetch({
 		    url: '../collection/index/id/' + model.get('id'),
 		    success: function() {
+		        toast.close();
+		        
                 self.editing = new EP.view.Collection.Table.EditItem({
                     model: model,
                     view: view
@@ -1005,10 +1027,29 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 			return;
 		}
 		
-		// validates and saves model
-		if (!this.model.save(values, options)){
-			return;
-		}
+		// validates
+        if (!this.model.set(values)){
+            return;
+        }
+		
+        new Toast({
+            msg: 'Enviando ...',
+            showLoading: true
+        });
+        
+        this.model.save(undefined, {
+            wait: true,
+            success: function(model, response) {
+                new Toast({
+                    msg: 'Registro salvo com sucesso!',
+                    closable: true,
+                    timeout: 8 * 1000
+                });
+                
+                self.close(true, true);
+                self.trigger('add', this.model, this);
+            }
+        });
 	},
 	
 	onBtnCancelClick: function() {
@@ -1113,7 +1154,7 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 		this.view.$el.tooltip('disable');
 	},
 	
-	close: function(destroy) {
+	close: function(destroy, shine) {
 		var self = this;
 		
 		this.$el.slideUp('fast', function() {
@@ -1122,6 +1163,13 @@ EP.view.Collection.Table.EditItem = Backbone.View.extend({
 				self.view.$el.tooltip('enable');
 				self.view.isEditing = false;
 				self.$el.parents('tr').remove();
+			}
+			
+			if (shine) {
+			    self.view.$el.animate({backgroundColor: '#F5FFFA'});
+			    setTimeout(function() {
+			        self.view.$el.animate({backgroundColor: '#ffffff'});
+			    }, 1000);
 			}
 		});
 	}

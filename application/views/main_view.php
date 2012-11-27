@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="../web/lib/jquery/jquery.js"></script>
 	<script type="text/javascript" src="../web/lib/jquery/jquery.position.js"></script>
 	<script type="text/javascript" src="../web/lib/jquery/jquery.validate.js"></script>
+	<script type="text/javascript" src="../web/lib/jquery/jquery.animate-colors-min.js"></script>
 	<script type="text/javascript" src="../web/lib/underscore/underscore.js"></script>
 	<script type="text/javascript" src="../web/lib/backbone/backbone.js"></script>
 	<script type="text/javascript" src="../web/lib/backbone/backbone-validation.js"></script>
@@ -31,6 +32,7 @@
 	<script type="text/javascript" src="../web/js/model/UserModel.js"></script>
 	<script type="text/javascript" src="../web/js/model/MetaDataModel.js"></script>
 	<script type="text/javascript" src="../web/js/collection/PaginatedCollection.js"></script>
+	<script type="text/javascript" src="../web/js/view/Toast.js"></script>
 	<script type="text/javascript" src="../web/js/view/Grid.js"></script>
 	<script type="text/javascript" src="../web/js/view/Login.js"></script>
 	<script type="text/javascript" src="../web/js/view/Header.js"></script>
@@ -39,7 +41,7 @@
 	<script type="text/javascript" src="../web/js/view/Home.js"></script>
 	<script type="text/javascript" src="../web/js/view/Collection.js"></script>
 	<script type="text/javascript" src="../web/js/view/Individual.js"></script>
-	<script type="text/javascript" src="../web/js/view/Chart.js"></script>
+	<script type="text/javascript" src="../web/js/view/Graphics.js"></script>
 	<script type="text/javascript" src="../web/js/view/User.js"></script>
 	<script type="text/javascript" src="../web/js/view/Agenda.js"></script>
 	<script type="text/javascript" src="../web/js/main.js"></script>
