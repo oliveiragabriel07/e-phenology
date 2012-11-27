@@ -238,7 +238,7 @@ EP.view.Collection.Filters = Backbone.View.extend({
 
 
 		if (/PERIOD#/.test(value)) {
-			filters[model.collection.name] = this.getPeriod(value.replace(/.*\#/, ''));
+			filters[model.collection.name] = this.getPeriod(value);
 		} else {
 			filters[model.collection.name] = value.replace(/.*\#/, '');
 		}
@@ -259,7 +259,7 @@ EP.view.Collection.Filters = Backbone.View.extend({
 		} else if (/LAST_YEAR/.test(date)) {
 			dateIni.addYears(-1);
 		} else {
-			return date;
+			return date.replace(/.*\#/, '');
 		}
 		
 		return [dateIni.toString('yyyy-MM-dd'), dateEnd.toString('yyyy-MM-dd')].join(';');
