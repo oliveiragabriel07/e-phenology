@@ -6,8 +6,8 @@
 	
 	<!--  styles -->
 	<link rel="stylesheet" type="text/css" href="../web/lib/bootstrap/css/bootstrap.css" />
-	<link rel="stylesheet" type="text/css" href="../web/css/login.css" />
 	<link rel="stylesheet" type="text/css" href="../web/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="../web/css/login.css" />
 
 	<!-- lib -->
 	<script type="text/javascript" src="../web/lib/jquery/jquery.js"></script>
@@ -33,9 +33,8 @@
 <body>
 	<div class="center">
 	
-		<h1 class="logo-login">e-phenology</h1>
-		
 		<div class="login-panel">
+			<h1 class="logo-login"><img src="web/img/logo_e-phenology.png" /></h1>
 			<form>
 				<fieldset>
 					<div class="control-group">

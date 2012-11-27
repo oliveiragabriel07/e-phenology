@@ -65,6 +65,12 @@ input[type="tel"], input[type="color"],
 	font-size: 12px;
 }
 
+.icon-import {
+	background-image: url('../img/icon-upload.png');
+	background-position: 0;
+	opacity: 0.6 !important;
+}
+
 .side-menu {
 	font-size: 14px;
 }
@@ -85,6 +91,13 @@ input[type="tel"], input[type="color"],
 	background-color: transparent;
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+
+.control-group.error input,
+.control-group.error select,
+.control-group.error textarea {
+	background: url('../img/icon-error.png') no-repeat right center #FFEAEA;
+	padding-right: 30px;
 }
 /*
  * Collection data

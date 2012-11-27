@@ -111,10 +111,13 @@
 		.header .logo {
 			margin: 10px 0;
 			float: left;
+			height: 50px;
+			width: 250px;
+			background: transparent url('web/img/logo_e-phenology.png') no-repeat scroll;
 		}
 		
 		.header .logo a {
-			/*text-indent: -9999px;*/
+			text-indent: -9999px;
 			overflow: hidden;	
 		}
 		
