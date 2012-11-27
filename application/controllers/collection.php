@@ -1,10 +1,13 @@
 <?php
 require_once 'application/libraries/REST_Controller.php';
+require_once 'application/enums/PlaceEnum.php';
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 
 class Collection extends REST_Controller {
+	const FILTER_ANY = "ANY";
+	
 	function __construct() {
 		parent::__construct();
 
@@ -51,13 +54,14 @@ class Collection extends REST_Controller {
 	}	
 
 	function search_get() {
-		// TODO validate input params
-		// TODO get fielters
+		// get query params
+		$filters = $this->parseSearchFilters($this->input->get('filters'));
 		$limit = $this->input->get('length');
 		$start = $this->input->get('start');
 		$sort = $this->input->get('sortField');
 		$dir = $this->input->get('sortDir');
-		$filters = $this->input->get('filters');
+		
+		// TODO validate input params
 		
 		if ($sort == 'place') {
 			$sort = Place_model::getMap('id');
@@ -67,8 +71,34 @@ class Collection extends REST_Controller {
 			$sort = Collection_model::getMap($sort);
 		}
 		
-		$collectionData = $this->collection->search($limit, $start, $sort, $dir);
+		$collectionData = $this->collection->search($limit, $start, $filters, $sort, $dir);
 		$this->response($collectionData);
+	}
+	
+	function parseSearchFilters($in) {
+		$filters = array();
+		
+		// parse filters
+		if (isset($in['transect']) && $in['transect'] != Collection::FILTER_ANY) {
+			$filters[Individual_model::getMap("transect")] = $in['transect'];
+		}
+		
+		if (isset($in['individual']) && $in['individual'] != Collection::FILTER_ANY) {
+			$filters[Individual_model::getMap("id")] = $in['individual'];
+		}
+		
+		if (isset($in['place']) && $in['place'] != Collection::FILTER_ANY) {
+			$place = new ReflectionClass('PlaceEnum');
+			$filters[Place_model::getMap("id")] = $place->getConstant($in['place']);
+		}
+		
+		if (isset($in['period']) && $in['period'] != Collection::FILTER_ANY) {
+			$period = explode(";", $in["period"], 2);
+			$filters[Collection_model::getMap("date") . " >="] = $period[0] . ' 00:00:00';
+			$filters[Collection_model::getMap("date") . " <"] = $period[1] . ' 00:00:00';
+		}	
+
+		return $filters;
 	}
 }
 

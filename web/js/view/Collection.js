@@ -174,13 +174,13 @@ EP.view.Collection.Filters = Backbone.View.extend({
             label: 'Em qualquer data',
             selected: true
         },{
-            value: 'LAST_MONTH',
+            value: 'LAST_MONTH#PERIOD#',
             label: 'Último mês'
         },{
-            value: 'LAST_TRHEE_MONTHS',
+            value: 'LAST_TRHEE_MONTHS#PERIOD#',
             label: 'Últimos 3 meses'
         },{
-            value: 'LAST_YEAR',
+            value: 'LAST_YEAR#PERIOD#',
             label: 'Último ano'
         },{
             type: 'divider'
@@ -233,13 +233,36 @@ EP.view.Collection.Filters = Backbone.View.extend({
         }
         
         var meta = this.collection.meta,
-            filters = meta.get('filters');
-        
-        filters[model.collection.name] = model.get('value').replace(/.*\#/, '');
-        
+            filters = meta.get('filters'),
+            value = model.get('value');
+
+
+		if (/PERIOD#/.test(value)) {
+			filters[model.collection.name] = this.getPeriod(value.replace(/.*\#/, ''));
+		} else {
+			filters[model.collection.name] = value.replace(/.*\#/, '');
+		}
+		
         meta.set('filters', filters);
         meta.set('start', 0);
         this.collection.getPaginated();
+   },
+    
+    getPeriod: function(date) {
+    	var dateEnd = new Date().clearTime();
+			dateIni = dateEnd.clone();
+			
+		if (/LAST_MONTH/.test(date)) {
+			dateIni.addMonths(-1);
+		} else if (/LAST_TRHEE_MONTHS/.test(date)) {
+			dateIni.addMonths(-3);
+		} else if (/LAST_YEAR/.test(date)) {
+			dateIni.addYears(-1);
+		} else {
+			return date;
+		}
+		
+		return [dateIni.toString('yyyy-MM-dd'), dateEnd.toString('yyyy-MM-dd')].join(';');
     }
         
     

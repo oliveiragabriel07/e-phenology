@@ -367,7 +367,7 @@ Class Collection_model extends Abstract_model {
 		);
 	}
 
-	public function search($limit, $start, $sort, $dir) {
+	public function search($limit, $start, $filters, $sort, $dir) {
 		$this->db->start_cache();
 		$this->db->select(Collection_model::getMap("id"));
 		$this->db->select(Collection_model::getMap("date"));
@@ -397,6 +397,12 @@ Class Collection_model extends Abstract_model {
 		$this->db->join(Family_model::$tableName, Genus_model::getMap("family") . " = " . Family_model::getMap("id"));
 		$this->db->order_by($sort, $dir);
 		$this->db->limit($limit, $start);
+		
+		// filters
+		foreach ($filters as $filter => $value) {
+			$this->db->where($filter, $value);
+		}
+		
 		$this->db->stop_cache();
 		
 		$query = $this->db->get();
